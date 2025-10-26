@@ -34,20 +34,25 @@ public class SecurityConfig {
         http
                 .authenticationProvider(authenticationProvider())
                 .authorizeHttpRequests(auth -> auth
-//                        .requestMatchers("/", "/login", "/register", "/css/**", "/js/**").permitAll()
-                        .anyRequest().permitAll()
-//                                .authenticated()
+                        // Các đường dẫn public
+                        .requestMatchers("/", "/login", "/register", "/css/**", "/js/**", "/images/**").permitAll()
+
+                        // Chỉ ADMIN mới được truy cập /admin/**
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
+
+                        // Các request còn lại yêu cầu đăng nhập
+                        .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
                         .loginPage("/login")
-                        .defaultSuccessUrl("/home")
+                        .defaultSuccessUrl("/")
                         .permitAll()
                 )
                 .logout(logout -> logout
                         .logoutUrl("/logout")
-                        .logoutSuccessUrl("/login?logout")
+                        .logoutSuccessUrl("/")
                         .invalidateHttpSession(true)
-                        .deleteCookies("JSESSIONID")
+                        .deleteCookies("MYSESSIONID")
                         .permitAll()
                 )
                 .sessionManagement(session -> session
