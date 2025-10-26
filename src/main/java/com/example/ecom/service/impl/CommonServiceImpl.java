@@ -1,5 +1,6 @@
-package com.explain.ecom.service;
+package com.example.ecom.service.impl;
 
+import com.example.ecom.service.CommonService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -9,7 +10,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 
 @Service
-public class CommnServiceImpl implements CommonService {
+public class CommonServiceImpl implements CommonService {
 
 	@Value("${rupee.sign}")
 	public String rupeeSign;

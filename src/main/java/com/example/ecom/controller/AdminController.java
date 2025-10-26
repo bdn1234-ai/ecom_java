@@ -1,12 +1,14 @@
 package com.example.ecom.controller;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.Locale.Category;
 
+
+import com.example.ecom.model.Category;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Controller;
@@ -27,6 +29,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 @Controller
 @RequestMapping("/admin")
 public class AdminController {
+
     @Autowired
     private CategoryService categoryService;
 
@@ -47,7 +50,7 @@ public class AdminController {
 
     @PostMapping("/saveCategory")
     public String saveCategory(@ModelAttribute Category category, @RequestParam("file") MultipartFile file,
-            HttpSession session) {
+                               HttpSession session) {
 
         String imageName = file != null ? file.getOriginalFilename() : "default.jpg";
 
@@ -65,15 +68,22 @@ public class AdminController {
 
             } else {
 
-                File saveFile = new ClassPathResource("static/img").getFile();
-                
-                Path path = Paths.get(saveFile.getAbsolutePath() + File.separator + "category_img" +
-                 File.separator + file.getOriginalFilename());
+                try {
+                    File saveFile = new ClassPathResource("static/img").getFile();
 
-                System.out.println(path);
-                Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
+                    Path path = Paths.get(saveFile.getAbsolutePath() + File.separator + "category_img" +
+                            File.separator + file.getOriginalFilename());
 
-                session.setAttribute("successMsg", "Save successfully");
+                    System.out.println("Saving file to: " + path);
+
+                    Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
+
+                    session.setAttribute("successMsg", "Save successfully");
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    session.setAttribute("errorMsg", "Error saving file: " + e.getMessage());
+                }
 
             }
         }
