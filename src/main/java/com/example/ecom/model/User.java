@@ -33,7 +33,8 @@ public class User {
 
     private String state;
 
-    private String pincode;
+    /* thật sự là cần pincode à*/
+    /*private String pincode;*/
 
     private String password;
 
