@@ -35,7 +35,9 @@ public class SecurityConfig {
                 .authenticationProvider(authenticationProvider())
                 .authorizeHttpRequests(auth -> auth
                         // Các đường dẫn public
-                        .requestMatchers("/", "/login", "/register", "/css/**", "/js/**", "/images/**").permitAll()
+                        .requestMatchers("/",
+                                "/products",
+                                "/login", "/register", "/css/**", "/js/**", "/images/**").permitAll()
 
                         // Chỉ ADMIN mới được truy cập /admin/**
                         .requestMatchers("/admin/**").hasRole("ADMIN")
