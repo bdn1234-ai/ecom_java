@@ -1,9 +1,11 @@
-package com.explain.ecom.service;
+package com.example.ecom.service.impl;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+
+import com.example.ecom.service.CommonService;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -23,9 +25,5 @@ public class CommnServiceImpl implements CommonService {
 		session.removeAttribute("errorMsg");
 	}
 	
-	@Override
-	public String rupeeSign()
-	{
-		return rupeeSign;
-	}
+	
 }

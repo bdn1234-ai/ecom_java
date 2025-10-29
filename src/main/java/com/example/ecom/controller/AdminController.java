@@ -1,11 +1,11 @@
 package com.example.ecom.controller;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.Locale.Category;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.example.ecom.model.Category;
 import com.example.ecom.service.CategoryService;
 
 import jakarta.servlet.http.HttpSession;
@@ -52,7 +53,7 @@ public class AdminController {
         String imageName = file != null ? file.getOriginalFilename() : "default.jpg";
 
         category.setImageName(imageName);
-        
+
         Boolean existCategory = categoryService.existCategory(category.getName());
 
         if (existCategory) {
@@ -65,19 +66,21 @@ public class AdminController {
 
             } else {
 
-                File saveFile = new ClassPathResource("static/img").getFile();
-                
-                Path path = Paths.get(saveFile.getAbsolutePath() + File.separator + "category_img" +
-                 File.separator + file.getOriginalFilename());
+                File saveFile;
+                try {
+                    saveFile = new ClassPathResource("static/img").getFile();
+                    Path path = Paths.get(saveFile.getAbsolutePath() + File.separator + "category_img" +
+                            File.separator + file.getOriginalFilename());
 
-                System.out.println(path);
-                Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
-
-                session.setAttribute("successMsg", "Save successfully");
+                    System.out.println("Saving file to: " + path);
+                    Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
+                } catch (IOException e) {
+                    session.setAttribute("successMsg", "Save successfully");
+                }
 
             }
         }
-       
+
         return "redirect:/admin/category";
     }
 
