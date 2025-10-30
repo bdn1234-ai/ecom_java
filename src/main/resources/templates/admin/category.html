@@ -12,7 +12,7 @@
 				<div class="col-md-3">
 					<div class="card card-sh">
 						<div class="card-header text-center ">
-							<p class="fs-4">Add Category</p>
+							<p class="fs-4">Thêm danh mục</p>
 							<th:block th:if="${session.succMsg}">
 								<p class="text-success fw-bold">[[${session.succMsg}]]</p>
 								<th:block th:text="${@commonServiceImpl.removeSessionMessage()}"></th:block>
@@ -28,33 +28,33 @@
 							<form action="/admin/saveCategory" method="post"
 								enctype="multipart/form-data">
 								<div class="mb-3">
-									<label>Enter Category</label> <input type="text" name="name"
+									<label>Nhập danh mục</label> <input type="text" name="name"
 										class="form-control">
 								</div>
 
 								<div class="mb-3">
-									<label>Status</label>
+									<label>Trạng thái</label>
 
 									<div class="form-check">
 										<input class="form-check-input" type="radio" checked
 											value="true" name="isActive" id="flexRadioDefault1">
 										<label class="form-check-label" for="flexRadioDefault1">
-											Active </label>
+											Hoạt động </label>
 									</div>
 									<div class="form-check">
 										<input class="form-check-input" type="radio" name="isActive"
 											value="false" id="flexRadioDefault2"> <label
 											class="form-check-label" for="flexRadioDefault2">
-											Inactive </label>
+											Không hoạt động </label>
 									</div>
 
 								</div>
 
 								<div class="mb-3">
-									<label>Upload Image</label> <input type="file" name="file"
+									<label>Tải ảnh lên</label> <input type="file" name="file"
 										class="form-control">
 								</div>
-								<button class="btn btn-primary col-md-12 mt-2">Save</button>
+								<button class="btn btn-primary col-md-12 mt-2">Lưu</button>
 							</form>
 						</div>
 					</div>
@@ -62,16 +62,16 @@
 
 				<div class="col-md-8">
 					<div class="card card-sh">
-						<div class="card-header text-center fs-4">Category Details</div>
+						<div class="card-header text-center fs-4">Chi tiết danh mục</div>
 						<div class="card-body">
 							<table class="table">
 								<thead>
 									<tr>
 										<th scope="col">Sl No</th>
-										<th scope="col">Category</th>
-										<th scope="col">Status</th>
-										<th scope="col">Image</th>
-										<th scope="col">Action</th>
+										<th scope="col">Danh mục</th>
+										<th scope="col">Trạng thái</th>
+										<th scope="col">Hình ảnh</th>
+										<th scope="col">Hành động</th>
 									</tr>
 								</thead>
 								<tbody>
@@ -84,17 +84,17 @@
 											width="50px" height="50px"></td>
 										<td><a th:href="@{'/admin/loadEditCategory/'+${cat.id}}"
 											class="btn btn-primary btn-sm"><i
-												class="fa-solid fa-pen-to-square  fa-1x"></i> Edit </a> <a
+												class="fa-solid fa-pen-to-square  fa-1x"></i> Sửa </a> <a
 											th:href="@{'/admin/deleteCategory/'+${cat.id}}"
 											class="btn btn-danger btn-sm"><i
-												class="fa-solid fa-trash  fa-1x"></i>Delete</a></td>
+												class="fa-solid fa-trash  fa-1x"></i>Xóa</a></td>
 									</tr>
 
 								</tbody>
 							</table>
 
 							<div class="row">
-								<div class="col-md-4">Total Category :
+								<div class="col-md-4">Tổng danh mục :
 									[[${totalElements}]]</div>
 								<div class="col-md-6">
 
