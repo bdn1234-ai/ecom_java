@@ -60,8 +60,8 @@
                 <li class="nav-item" sec:authorize="isAnonymous()">
                     <a class="nav-link" th:href="@{/login}">Đăng nhập</a>
                 </li>
-                <li class="nav-item" th:unless="${currentUser}">
-                    <a class="nav-link" th:href="@{/user/register}">Đăng ký</a>
+                <li class="nav-item" sec:authorize="isAnonymous()">
+                    <a class="nav-link" th:href="@{/register}">Đăng ký</a>
                 </li>
 
                 <!-- Nếu user là ADMIN -->

@@ -32,10 +32,12 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-        .authenticationProvider(authenticationProvider())
-        .authorizeHttpRequests(auth -> auth
-            // Các đường dẫn public (cho phép truy cập các tài nguyên tĩnh và trang sản phẩm)
-            .requestMatchers("/", "/login", "/register", "/css/**", "/js/**", "/images/**", "/img/**", "/products/**", "/product/**").permitAll()
+                .authenticationProvider(authenticationProvider())
+                .authorizeHttpRequests(auth -> auth
+                        // Các đường dẫn public
+                        .requestMatchers("/",
+                                "/products",
+                                "/login", "/register", "/css/**", "/js/**", "/images/**").permitAll()
 
             // Chỉ ADMIN mới được truy cập /admin/**
             .requestMatchers("/admin/**").hasRole("ADMIN")
