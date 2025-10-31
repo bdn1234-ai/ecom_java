@@ -6,12 +6,15 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.List;
 
 
 import com.example.ecom.model.Category;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -44,7 +47,20 @@ public class AdminController {
     }
 
     @GetMapping("/category")
-    public String category() {
+    public String category(Model m, @RequestParam(name = "pageNo", defaultValue = "0") Integer pageNo,
+                           @RequestParam(name = "pageSize", defaultValue = "10") Integer pageSize) {
+        // m.addAttribute("categorys", categoryService.getAllCategory());
+        Page<Category> page = categoryService.getAllCategorPagination(pageNo, pageSize);
+        List<Category> categorys = page.getContent();
+        m.addAttribute("categorys", categorys);
+
+        m.addAttribute("pageNo", page.getNumber());
+        m.addAttribute("pageSize", pageSize);
+        m.addAttribute("totalElements", page.getTotalElements());
+        m.addAttribute("totalPages", page.getTotalPages());
+        m.addAttribute("isFirst", page.isFirst());
+        m.addAttribute("isLast", page.isLast());
+
         return "admin/category";
     }
 
@@ -52,10 +68,6 @@ public class AdminController {
     public String saveCategory(@ModelAttribute Category category, @RequestParam("file") MultipartFile file,
                                HttpSession session) {
 
-        String imageName = file != null ? file.getOriginalFilename() : "default.jpg";
-
-        category.setImageName(imageName);
-        
         Boolean existCategory = categoryService.existCategory(category.getName());
 
         if (existCategory) {
@@ -68,24 +80,28 @@ public class AdminController {
 
             } else {
 
-                try {
-                    File saveFile = new ClassPathResource("static/img").getFile();
+                    try {
+                        // ✅ Đường dẫn thực tế tới static/img/category_img
+                        String uploadDir = "uploads/img/category_img/";
+                        File directory = new File(uploadDir);
+                        if (!directory.exists()) {
+                            directory.mkdirs(); // Tạo nếu chưa có
+                        }
 
-                    Path path = Paths.get(saveFile.getAbsolutePath() + File.separator + "category_img" +
-                            File.separator + file.getOriginalFilename());
+                        Path path = Paths.get(uploadDir + file.getOriginalFilename());
+                        Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
 
-                    System.out.println("Saving file to: " + path);
+                        category.setImageName(file.getOriginalFilename());
+                        categoryService.saveCategory(category);
 
-                    Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
+                        session.setAttribute("successMsg", "Save successfully");
 
-                    session.setAttribute("successMsg", "Save successfully");
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        session.setAttribute("errorMsg", "Error saving file: " + e.getMessage());
+                    }
 
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    session.setAttribute("errorMsg", "Error saving file: " + e.getMessage());
                 }
-
-            }
         }
        
         return "redirect:/admin/category";

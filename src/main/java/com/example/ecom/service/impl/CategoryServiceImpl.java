@@ -4,6 +4,9 @@ import java.util.List;
 
 import com.example.ecom.model.Category;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 
@@ -28,6 +31,11 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public List<Category> getAllCategory() {
         return categoryRepository.findAll();
+    }
+
+    @Override
+    public Page<Category> getAllCategorPagination(Integer pageNo, Integer pageSize) {
+        return categoryRepository.findAll(PageRequest.of(pageNo, pageSize));
     }
 
 }
