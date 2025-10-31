@@ -39,12 +39,12 @@ public class SecurityConfig {
                                 "/products",
                                 "/login", "/register", "/css/**", "/js/**", "/images/**").permitAll()
 
-                        // Chỉ ADMIN mới được truy cập /admin/**
-                        .requestMatchers("/admin/**").hasRole("ADMIN")
+            // Chỉ ADMIN mới được truy cập /admin/**
+            .requestMatchers("/admin/**").hasRole("ADMIN")
 
-                        // Các request còn lại yêu cầu đăng nhập
-                        .anyRequest().authenticated()
-                )
+            // Các request còn lại yêu cầu đăng nhập
+            .anyRequest().authenticated()
+        )
                 .formLogin(form -> form
                         .loginPage("/login")
                         .defaultSuccessUrl("/")
