@@ -91,4 +91,9 @@ public class AdminController {
         return "redirect:/admin/category";
     }
 
+    @GetMapping("/product")
+    public String loadViewProduct(Model m) {
+        return "admin/product";
+    }
+    
 }

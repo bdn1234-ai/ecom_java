@@ -9,10 +9,10 @@
 	<section>
 		<div class="container-fluid mt-4 p-3">
 			<div class="row">
-				<p class="text-center fs-3 mt-2">All Products</p>
+				<p class="text-center fs-3 mt-2">Tất cả sản phẩm</p>
 				<hr>
 				<a href="/admin/" class="text-decoration-none"><i
-					class="fa-solid fa-arrow-left"></i> Back</a>
+					class="fa-solid fa-arrow-left"></i> Quay lại</a>
 				<th:block th:if="${session.succMsg}">
 					<p class="text-success fw-bold">[[${session.succMsg}]]</p>
 					<th:block th:text="${@commnServiceImpl.removeSessionMessage()}"></th:block>
@@ -35,7 +35,7 @@
 								<input type="text" class="form-control " name="ch">
 							</div>
 							<div class="col">
-								<button class="btn btn-primary col">Search</button>
+								<button class="btn btn-primary col">Tìm kiếm</button>
 							</div>
 						</div>
 					</form>
@@ -49,15 +49,15 @@
 						<thead class="table-light ">
 							<tr>
 								<th scope="col">Sl No</th>
-								<th scope="col">Image</th>
-								<th scope="col">Title</th>
-								<th scope="col">Category</th>
-								<th scope="col">Price</th>
-								<th scope="col">Discount</th>
-								<th scope="col">Discount Price</th>
-								<th scope="col">Status</th>
-								<th scope="col">Stock</th>
-								<th scope="col">Action</th>
+								<th scope="col">Ảnh</th>
+								<th scope="col">Tiêu đề</th>
+								<th scope="col">Danh mục</th>
+								<th scope="col">Giá</th>
+								<th scope="col">Giảm giá</th>
+								<th scope="col">Giá sau giảm</th>
+								<th scope="col">Trạng thái</th>
+								<th scope="col">Kho</th>
+								<th scope="col">Hành động</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -75,10 +75,10 @@
 								<td>
 									<a th:href="@{'/admin/editProduct/'+${p.id}}"
 										class="btn btn-sm btn-primary"><i
-											class="fa-solid fa-pen-to-square"></i>Edit</a>
+											class="fa-solid fa-pen-to-square"></i>Chỉnh sửa</a>
 									<a th:href="@{'/admin/deleteProduct/'+${p.id}}"
 										class="btn btn-sm btn-danger"><i class="fa-solid fa-trash"></i>
-										Delete</a>
+										Xóa</a>
 								</td>
 							</tr>
 
@@ -86,7 +86,7 @@
 					</table>
 
 					<div class="row">
-						<div class="col-md-4">Total Product : [[${totalElements}]]</div>
+						<div class="col-md-4">Tổng sản phẩm : [[${totalElements}]]</div>
 						<div class="col-md-6">
 
 							<nav aria-label="Page navigation example">
