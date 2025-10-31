@@ -38,7 +38,8 @@
 								<a href="/products"
 									th:classappend="${paramValue==''} ? 'active':''"
 									class="list-group-item list-group-item-action"
-									aria-current="true"> All </a> <a th:each="c:${categories}"
+									aria-current="true"> All </a>
+									<a th:each="c:${categories}"
 									th:href="@{'/products?category='+${c.name}}"
 									th:classappend="${paramValue == c.name} ? 'active':''"
 									class="list-group-item list-group-item-action">[[${c.name}]]</a>
