@@ -6,7 +6,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-
+import java.util.Map;
 
 import com.example.ecom.model.Category;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.example.ecom.service.CategoryService;
+import com.example.ecom.service.ProductService;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -35,6 +36,9 @@ public class AdminController {
     @Autowired
     private CategoryService categoryService;
 
+    @Autowired
+	private ProductService productService;
+    
     @GetMapping()
     public String index() {
         return "admin/index";
@@ -93,9 +97,9 @@ public class AdminController {
         return "redirect:/admin/category";
     }
 
-    @GetMapping("/product")
+    @GetMapping("/products")
     public String loadViewProduct(Model m) {
-        return "admin/product";
+        return "admin/products";
     }
     
 }

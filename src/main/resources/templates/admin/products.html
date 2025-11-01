@@ -15,17 +15,17 @@
 					class="fa-solid fa-arrow-left"></i> Quay lại</a>
 				<th:block th:if="${session.succMsg}">
 					<p class="text-success fw-bold">[[${session.succMsg}]]</p>
-					<th:block th:text="${@commnServiceImpl.removeSessionMessage()}"></th:block>
+					<th:block th:text="${@commonServiceImpl.removeSessionMessage()}"></th:block>
 				</th:block>
 
 				<th:block th:if="${session.errorMsg}">
 					<p class="text-danger fw-bold">[[${session.errorMsg}]]</p>
-					<th:block th:text="${@commnServiceImpl.removeSessionMessage()}"></th:block>
+					<th:block th:text="${@commonServiceImpl.removeSessionMessage()}"></th:block>
 				</th:block>
 
 				<th:block th:if="${session.errorMsg}">
 					<p class="text-danger fw-bold text-center">[[${session.errorMsg}]]</p>
-					<th:block th:text="${@commnServiceImpl.removeSessionMessage()}"></th:block>
+					<th:block th:text="${@commonServiceImpl.removeSessionMessage()}"></th:block>
 				</th:block>
 				<div class="col-md-4 p-3">
 
