@@ -68,40 +68,11 @@ public class AdminController {
     public String saveCategory(@ModelAttribute Category category, @RequestParam("file") MultipartFile file,
                                HttpSession session) {
 
-        Boolean existCategory = categoryService.existCategory(category.getName());
-
-        if (existCategory) {
-            session.setAttribute("errMsg", "Category Name already exists");
-        } else {
-            Category savCategory = categoryService.saveCategory(category);
-
-            if (ObjectUtils.isEmpty(savCategory)) {
-                session.setAttribute("errorMsg", "Not saved ! internal servel error");
-
-            } else {
-
-                    try {
-                        // ✅ Đường dẫn thực tế tới static/img/category_img
-                        String uploadDir = "uploads/img/category_img/";
-                        File directory = new File(uploadDir);
-                        if (!directory.exists()) {
-                            directory.mkdirs(); // Tạo nếu chưa có
-                        }
-
-                        Path path = Paths.get(uploadDir + file.getOriginalFilename());
-                        Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
-
-                        category.setImageName(file.getOriginalFilename());
-                        categoryService.saveCategory(category);
-
-                        session.setAttribute("successMsg", "Save successfully");
-
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                        session.setAttribute("errorMsg", "Error saving file: " + e.getMessage());
-                    }
-
-                }
+        try {
+            categoryService.createCategory(category, file);
+            session.setAttribute("successMsg", "Category Added Successfully ! ");
+        } catch (Exception e) {
+            session.setAttribute("errorMsg", "Error saving file: " + e.getMessage());
         }
        
         return "redirect:/admin/category";
