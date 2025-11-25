@@ -23,11 +23,11 @@ import com.example.ecom.service.CategoryService;
 import com.example.ecom.service.ProductService;
 
 import jakarta.servlet.http.HttpSession;
-
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-
 import org.springframework.ui.Model;
+import java.util.List;
+import org.springframework.data.domain.Page;
+import com.example.ecom.model.Product;
 
 @Controller
 @RequestMapping("/admin")
@@ -98,7 +98,29 @@ public class AdminController {
     }
 
     @GetMapping("/products")
-    public String loadViewProduct(Model m) {
+    public String loadViewProduct(Model m,
+                                  @RequestParam(name = "pageNo", defaultValue = "0") Integer pageNo,
+                                  @RequestParam(name = "pageSize", defaultValue = "12") Integer pageSize,
+                                  @RequestParam(defaultValue = "") String ch) {
+
+        Page<Product> page = null;
+        if (ch == null || ch.isBlank()) {
+            page = productService.getAllActiveProductPagination(pageNo, pageSize, "");
+        } else {
+            page = productService.searchActiveProductPagination(pageNo, pageSize, "", ch);
+        }
+
+        List<Product> products = page.getContent();
+        m.addAttribute("products", products);
+        m.addAttribute("productsSize", products.size());
+
+        m.addAttribute("pageNo", page.getNumber());
+        m.addAttribute("pageSize", pageSize);
+        m.addAttribute("totalElements", page.getTotalElements());
+        m.addAttribute("totalPages", page.getTotalPages());
+        m.addAttribute("isFirst", page.isFirst());
+        m.addAttribute("isLast", page.isLast());
+
         return "admin/products";
     }
     

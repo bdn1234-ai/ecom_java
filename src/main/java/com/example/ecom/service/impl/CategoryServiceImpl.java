@@ -1,7 +1,7 @@
 package com.example.ecom.service.impl;
 
 import java.util.List;
-
+import org.springframework.data.domain.Page;
 import com.example.ecom.model.Category;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,5 +29,20 @@ public class CategoryServiceImpl implements CategoryService {
     public List<Category> getAllCategory() {
         return categoryRepository.findAll();
     }
-
+    @Override
+    public Boolean deleteCategory(int id) {
+        return null;
+    }
+    @Override
+    public Category getCategoryById(int id) {
+        return null;
+    }
+    @Override
+    public List<Category> getAllActiveCategory() {
+        return null;
+    }
+    @Override
+    public Page<Category> getAllCategoryPagination(Integer pageNo, Integer pageSize) {
+        return null;
+    }
 }

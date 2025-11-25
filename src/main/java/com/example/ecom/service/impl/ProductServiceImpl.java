@@ -63,8 +63,11 @@ public class ProductServiceImpl implements ProductService {
 	public Product updateProduct(Product product, MultipartFile image) {
 
 		Product dbProduct = getProductById(product.getId());
+		if (dbProduct == null) {
+			return null;
+		}
 
-		String imageName = image.isEmpty() ? dbProduct.getImage() : image.getOriginalFilename();
+		String imageName = (image == null || image.isEmpty()) ? dbProduct.getImage() : image.getOriginalFilename();
 
 		dbProduct.setTitle(product.getTitle());
 		dbProduct.setDescription(product.getDescription());
@@ -75,7 +78,6 @@ public class ProductServiceImpl implements ProductService {
 		dbProduct.setIsActive(product.getIsActive());
 		dbProduct.setDiscount(product.getDiscount());
 
-		// 5=100*(5/100); 100-5=95
 		Double disocunt = product.getPrice() * (product.getDiscount() / 100.0);
 		Double discountPrice = product.getPrice() - disocunt;
 		dbProduct.setDiscountPrice(discountPrice);
@@ -84,7 +86,7 @@ public class ProductServiceImpl implements ProductService {
 
 		if (!ObjectUtils.isEmpty(updateProduct)) {
 
-			if (!image.isEmpty()) {
+			if (image != null && !image.isEmpty()) {
 
 				try {
 					File saveFile = new ClassPathResource("static/img").getFile();
@@ -134,7 +136,7 @@ public class ProductServiceImpl implements ProductService {
 		if (ObjectUtils.isEmpty(category)) {
 			pageProduct = productRepository.findByIsActiveTrue(pageable);
 		} else {
-			pageProduct = productRepository.findByCategory(pageable, category);
+			pageProduct = productRepository.findByCategory(category, pageable);
 		}
 		return pageProduct;
 	}
@@ -145,15 +147,11 @@ public class ProductServiceImpl implements ProductService {
 		Page<Product> pageProduct = null;
 		Pageable pageable = PageRequest.of(pageNo, pageSize);
 
-		pageProduct = productRepository.findByisActiveTrueAndTitleContainingIgnoreCaseOrCategoryContainingIgnoreCase(ch,
+		pageProduct = productRepository.findByIsActiveTrueAndTitleContainingIgnoreCaseOrCategoryContainingIgnoreCase(ch,
 				ch, pageable);
 
-//		if (ObjectUtils.isEmpty(category)) {
-//			pageProduct = productRepository.findByIsActiveTrue(pageable);
-//		} else {
-//			pageProduct = productRepository.findByCategory(pageable, category);
-//		}
 		return pageProduct;
 	}
 
 }
+
