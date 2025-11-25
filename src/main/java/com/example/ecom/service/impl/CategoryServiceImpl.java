@@ -8,14 +8,13 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
 
-import com.example.ecom.model.Category;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-
+import com.example.ecom.model.Category;
 import com.example.ecom.repository.CategoryRepository;
 import com.example.ecom.service.CategoryService;
 import org.springframework.util.ObjectUtils;
@@ -68,6 +67,10 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    public List<Category> getAllActiveCategory() {
+        List<Category> categories = categoryRepository.findByIsActiveTrue();
+		return categories;
+    }
     public Boolean deleteCategory(int id) {
         return null;
     }
