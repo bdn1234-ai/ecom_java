@@ -74,43 +74,12 @@ public class AdminController {
     @PostMapping("/saveCategory")
     public String saveCategory(@ModelAttribute Category category, @RequestParam("file") MultipartFile file,
             HttpSession session) {
-
-        Boolean existCategory = categoryService.existCategory(category.getName());
-
-        if (existCategory) {
-            session.setAttribute("errMsg", "Category Name already exists");
-        } else {
-            Category savCategory = categoryService.saveCategory(category);
-
-            if (ObjectUtils.isEmpty(savCategory)) {
-                session.setAttribute("errorMsg", "Không lưu được ! Lỗi Servel nội bộ");
-
-            } else {
-
-                try {
-                    // ✅ Đường dẫn thực tế tới static/img/category_img
-                    String uploadDir = "uploads/img/category_img/";
-                    File directory = new File(uploadDir);
-                    if (!directory.exists()) {
-                        directory.mkdirs(); // Tạo nếu chưa có
-                    }
-
-                    Path path = Paths.get(uploadDir + file.getOriginalFilename());
-                    Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
-
-                    category.setImageName(file.getOriginalFilename());
-                    categoryService.saveCategory(category);
-
-                    session.setAttribute("successMsg", "Save successfully");
-
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    session.setAttribute("errorMsg", "Error saving file: " + e.getMessage());
-                }
-
+            try{
+                categoryService.createCategory(category, file);
+                session.setAttribute("successMsg", "Category Added Successfully ! ");
+            }catch(Exception e){
+                session.setAttribute("errorMsg", "Error saving file: " + e.getMessage());
             }
-        }
-
         return "redirect:/admin/category";
     }
 
@@ -131,9 +100,9 @@ public class AdminController {
         if (existProduct) {
             session.setAttribute("errorMsg", "Tên sản phẩm đã tồn tại");
         } else {
-            
+
             Product saveProduct = productService.saveProduct(product); // LƯU DB LẦN 1
-            
+
             if (ObjectUtils.isEmpty(saveProduct)) {
                 session.setAttribute("errorMsg", "Không lưu được ! Lỗi Servel nội bộ");
 
@@ -157,21 +126,16 @@ public class AdminController {
                     product.setImage(image.getOriginalFilename());
                     productService.saveProduct(product); // LƯU DB LẦN 2
 
-                    session.setAttribute("succMsg", "Lưu sản phẩm thành công"); 
+                    session.setAttribute("succMsg", "Lưu sản phẩm thành công");
 
                 } catch (IOException e) {
                     e.printStackTrace();
                     session.setAttribute("errorMsg", "Lỗi I/O khi lưu tệp ảnh: " + e.getMessage());
-                } catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                     session.setAttribute("errorMsg", "Lỗi không mong muốn: " + e.getMessage());
                 }
             }
-        try {
-            categoryService.createCategory(category, file);
-            session.setAttribute("successMsg", "Category Added Successfully ! ");
-        } catch (Exception e) {
-            session.setAttribute("errorMsg", "Error saving file: " + e.getMessage());
         }
 
         return "redirect:/admin/loadAddProduct";
