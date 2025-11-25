@@ -14,11 +14,10 @@ public interface CategoryService {
 
 	public Boolean existCategory(String name);
 
-	public List<Category> getAllCategory();
+	List<Category> getAllCategory();
 
     void createCategory(Category category, MultipartFile file);
 
-    List<Category> getAllCategory();
     Boolean deleteCategory(int id);
     Page<Category> getAllCategorPagination(Integer pageNo, Integer pageSize);
 

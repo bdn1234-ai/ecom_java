@@ -24,7 +24,7 @@
                 [[${session.succMsg}]]
               </p>
               <th:block
-                th:text="${@commnServiceImpl.removeSessionMessage()}"
+                th:text="${@commonServiceImpl.removeSessionMessage()}"
               ></th:block>
             </th:block>
 
@@ -33,7 +33,7 @@
                 [[${session.errorMsg}]]
               </p>
               <th:block
-                th:text="${@commnServiceImpl.removeSessionMessage()}"
+                th:text="${@commonServiceImpl.removeSessionMessage()}"
               ></th:block>
             </th:block>
             <div class="col-md-6 text-end">
@@ -68,7 +68,7 @@
               </p>
               <p class="fs-5 fw-bold">
                 Price :&nbsp; &nbsp; &nbsp; &nbsp;<th:block
-                  th:utext="${@commnServiceImpl.rupeeSign()}"
+                  th:utext="${@commonServiceImpl.rupeeSign()}"
                 ></th:block>
                 [[${product.discountPrice}]]
                 <span class="fs-6 text-decoration-line-through text-secondary"

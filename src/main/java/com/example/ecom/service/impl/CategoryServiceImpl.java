@@ -65,14 +65,22 @@ public class CategoryServiceImpl implements CategoryService {
     public List<Category> getAllCategory() {
         return categoryRepository.findAll();
     }
-
+    @Override
+    public Category saveCategory(Category category) {
+        return categoryRepository.save(category);
+    }
     @Override
     public List<Category> getAllActiveCategory() {
         List<Category> categories = categoryRepository.findByIsActiveTrue();
 		return categories;
     }
+    @Override
     public Boolean deleteCategory(int id) {
         return null;
+    }
+    @Override
+    public Boolean existCategory(String name) {
+        return categoryRepository.existsByName(name);
     }
 
     @Override

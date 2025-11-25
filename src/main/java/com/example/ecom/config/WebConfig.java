@@ -17,6 +17,6 @@ public class WebConfig implements WebMvcConfigurer {
         
         // Cấu hình product
         registry.addResourceHandler("/img/product_img/**")
-        .addResourceLocations("\"file:uploads/img/product_img/");
+        .addResourceLocations("file:uploads/img/product_img/");
     }
 }
