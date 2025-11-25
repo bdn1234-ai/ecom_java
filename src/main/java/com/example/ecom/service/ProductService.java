@@ -12,9 +12,9 @@ public interface ProductService {
 	public Product saveProduct(Product product);
 
 	public List<Product> getAllProducts();
-
 	public Boolean deleteProduct(Integer id);
-
+	public Boolean existProduct(String title);
+	
 	public Product getProductById(Integer id);
 
 	public Product updateProduct(Product product, MultipartFile file);

@@ -1,18 +1,14 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-<meta charset="ISO-8859-1">
-<title>Đăng ký</title>
-</head>
-<body>
-<div class="mb-3">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Đăng ký</title>
+    <meta charset="ISO-8859-1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng ký tài khoản</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-        rel="stylesheet"
-        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
-        crossorigin="anonymous">
+          rel="stylesheet"
+          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+          crossorigin="anonymous">
 
     <style>
         body {
@@ -23,7 +19,7 @@
             background-color: #f8f9fa;
         }
         .auth-card {
-            max-width: 520px;
+            max-width: 550px;
             width: 100%;
         }
     </style>
@@ -31,82 +27,98 @@
 <body class="text-center">
 
 <main class="auth-card">
-    <div class="card shadow-sm border-0">
-        <div class="card-body p-4 p-md-5">
+    <div class="card shadow-sm border-0 my-5"> <div class="card-body p-4 p-md-5">
 
-            <h1 class="h3 mb-4 fw-normal">🛍️ Đăng ký MyStore</h1>
+        <h1 class="h3 mb-4 fw-normal">🛍️ Đăng ký MyStore</h1>
 
-            <div th:if="${session.succMsg}" class="alert alert-success" th:text="${session.succMsg}"></div>
-            <div th:if="${session.errorMsg}" class="alert alert-danger" th:text="${session.errorMsg}"></div>
+        <th:block th:if="${session.succMsg}">
+            <div class="alert alert-success text-center" role="alert">
+                [[${session.succMsg}]]
+            </div>
+            <th:block th:text="${@sessionHelper.removeMessageFromSession()}"></th:block>
+        </th:block>
 
-            <form th:action="@{/saveUser}" method="post" enctype="multipart/form-data">
+        <th:block th:if="${session.errorMsg}">
+            <div class="alert alert-danger text-center" role="alert">
+                [[${session.errorMsg}]]
+            </div>
+            <th:block th:text="${@sessionHelper.removeMessageFromSession()}"></th:block>
+        </th:block>
 
-                <div class="form-floating mb-3">
-                    <input type="text" class="form-control" id="name" name="name" placeholder="Họ và tên" required>
-                    <label for="name">Họ và tên</label>
-                </div>
+        <form th:action="@{/register}" method="post" enctype="multipart/form-data">
 
-                <div class="form-floating mb-3">
-                    <input type="email" class="form-control" id="email" name="email" placeholder="Email" required>
-                    <label for="email">Email</label>
-                </div>
-
-                <div class="form-floating mb-3">
-                    <input type="tel" class="form-control" id="mobileNumber" name="mobileNumber" placeholder="Số điện thoại" required>
-                    <label for="mobileNumber">Số điện thoại</label>
-                </div>
-
-                <div class="form-floating mb-3">
-                    <input type="text" class="form-control" id="address" name="address" placeholder="Địa chỉ">
-                    <label for="address">Địa chỉ</label>
-                </div>
-
-                <div class="row g-3">
-                    <div class="col-md-6">
-                        <div class="form-floating mb-3">
-                            <input type="text" class="form-control" id="city" name="city" placeholder="Thành phố">
-                            <label for="city">Thành phố</label>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-floating mb-3">
-                            <input type="text" class="form-control" id="state" name="state" placeholder="Tỉnh/Thành">
-                            <label for="state">Tỉnh/Thành</label>
-                        </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="name" name="name" placeholder="Họ và tên" required>
+                        <label for="name">Họ và tên</label>
                     </div>
                 </div>
-
-                <div class="form-floating mb-3">
-                    <input type="number" class="form-control" id="pincode" name="pincode" placeholder="Mã bưu chính">
-                    <label for="pincode">Mã bưu chính</label>
+                <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="mobileNumber" name="mobileNumber" placeholder="SĐT" required>
+                        <label for="mobileNumber">Số điện thoại</label>
+                    </div>
                 </div>
-
-                <div class="form-floating mb-3">
-                    <input type="password" class="form-control" id="password" name="password" placeholder="Mật khẩu" required>
-                    <label for="password">Mật khẩu</label>
-                </div>
-
-                <div class="form-floating mb-3">
-                    <input type="password" class="form-control" id="confirmpassword" name="confirmpassword" placeholder="Xác nhận mật khẩu" required>
-                    <label for="confirmpassword">Xác nhận mật khẩu</label>
-                </div>
-
-                <div class="mb-3 text-start">
-                    <label class="form-label">Ảnh đại diện</label>
-                    <input class="form-control" name="img" type="file">
-                </div>
-
-                <button class="w-100 btn btn-lg btn-primary" type="submit">Đăng ký</button>
-
-            </form>
-
-            <div class="mt-4">
-                <p>Đã có tài khoản? <a th:href="@{/user/login}">Đăng nhập</a></p>
             </div>
 
-            <p class="mt-4 mb-0 text-muted">&copy; 2025 Cửa hàng của tôi</p>
+            <div class="form-floating mb-3">
+                <input type="email" class="form-control" id="email" name="email" placeholder="Email" required>
+                <label for="email">Email</label>
+            </div>
 
+            <div class="form-floating mb-3">
+                <input type="text" class="form-control" id="username" name="username" placeholder="Tên đăng nhập" required>
+                <label for="username">Tên đăng nhập </label>
+            </div>
+
+            <div class="form-floating mb-3">
+                <input type="text" class="form-control" id="address" name="address" placeholder="Địa chỉ">
+                <label for="address">Địa chỉ</label>
+            </div>
+
+            <div class="row g-2">
+                <div class="col-md-5">
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="city" name="city" placeholder="Thành phố">
+                        <label for="city">Thành phố</label>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="state" name="state" placeholder="Tỉnh">
+                        <label for="state">Tỉnh</label>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-floating mb-3">
+                        <input type="number" class="form-control" id="pincode" name="pincode" placeholder="Zip">
+                        <label for="pincode">Zip Code</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-floating mb-3">
+                <input type="password" class="form-control" id="password" name="password" placeholder="Mật khẩu" required>
+                <label for="password">Mật khẩu</label>
+            </div>
+
+            <div class="mb-3 text-start">
+                <label class="form-label fw-bold">Ảnh đại diện</label>
+                <input class="form-control" name="file" type="file">
+            </div>
+
+            <button class="w-100 btn btn-lg btn-primary mt-3" type="submit">Đăng ký</button>
+
+        </form>
+
+        <div class="mt-4">
+            <p>Đã có tài khoản? <a th:href="@{/login}">Đăng nhập ngay</a></p>
         </div>
+
+        <p class="mt-3 mb-0 text-muted">&copy; 2025 MyStore</p>
+
+    </div>
     </div>
 </main>
 

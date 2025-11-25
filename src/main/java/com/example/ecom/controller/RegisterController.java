@@ -2,7 +2,10 @@ package com.example.ecom.controller;
 
 
 import com.example.ecom.model.User;
+import com.example.ecom.repository.UserRepository;
+import com.example.ecom.service.auth.register.RegisterService;
 import jakarta.servlet.http.HttpSession;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -10,17 +13,24 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 
 @Controller
-@RequestMapping()
+@RequestMapping("/register")
+@AllArgsConstructor
 public class RegisterController {
-
-
-    @GetMapping("/register")
+    private final RegisterService registerService;
+    @GetMapping()
     public String register() {
-        return "register"; // Trả về tên của view đăng ký
+        return "register";
     }
 
-    @PostMapping("/saveUser")
-    public String saveUser(@ModelAttribute User user, @RequestParam("img") MultipartFile file, HttpSession session){
-        return "redirect:/register";
+    @PostMapping()
+    public String saveUser(@ModelAttribute User user, @RequestParam("file") MultipartFile file, HttpSession session){
+        try{
+            registerService.register(user,file);
+            session.setAttribute("successMsg","Register Successfully ! ");
+        } catch (Exception e) {
+            session.setAttribute("errorMsg","Error saving file: " + e.getMessage());
+            return "redirect:/register";
+        }
+        return "redirect:/login";
     }
 }

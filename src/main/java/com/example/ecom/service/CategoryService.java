@@ -5,20 +5,19 @@ import java.util.List;
 import com.example.ecom.model.Category;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Page;
-@Service
+
+import org.springframework.data.domain.Page;
+import org.springframework.web.multipart.MultipartFile;
 public interface CategoryService {
 
-    public Category saveCategory(Category category);
+    void createCategory(Category category, MultipartFile file);
 
-    public Boolean existCategory(String name);
+    List<Category> getAllCategory();
+    Boolean deleteCategory(int id);
 
-    public List<Category> getAllCategory();
-
-    public Boolean deleteCategory(int id);
-
-	public Category getCategoryById(int id);
+	// public Category getCategoryById(int id);
 
 	public List<Category> getAllActiveCategory();
 
-	public Page<Category> getAllCategoryPagination(Integer pageNo,Integer pageSize);
+	Page<Category> getAllCategoryPagination(Integer pageNo,Integer pageSize);
 }
