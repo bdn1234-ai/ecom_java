@@ -21,6 +21,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(unique = true)
     private String username;
 
     private String name;
@@ -43,14 +44,6 @@ public class User {
 
     private String role;
 
-    private Boolean isEnable;
 
-    private Boolean accountNonLocked;
-
-    private Integer failedAttempt;
-
-    private Date lockTime;
-
-    private String resetToken;
 
 }

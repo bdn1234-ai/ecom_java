@@ -4,17 +4,14 @@ import java.util.List;
 
 import com.example.ecom.model.Category;
 import org.springframework.data.domain.Page;
-import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
-@Service
 public interface CategoryService {
 
-    public Category saveCategory(Category category);
+    void createCategory(Category category, MultipartFile file);
 
-    public Boolean existCategory(String name);
-
-    public List<Category> getAllCategory();
-
-    public Page<Category> getAllCategorPagination(Integer pageNo, Integer pageSize);
+    List<Category> getAllCategory();
+    Boolean deleteCategory(int id);
+    Page<Category> getAllCategorPagination(Integer pageNo, Integer pageSize);
 
 }

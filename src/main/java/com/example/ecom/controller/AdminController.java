@@ -167,6 +167,11 @@ public class AdminController {
                     session.setAttribute("errorMsg", "Lỗi không mong muốn: " + e.getMessage());
                 }
             }
+        try {
+            categoryService.createCategory(category, file);
+            session.setAttribute("successMsg", "Category Added Successfully ! ");
+        } catch (Exception e) {
+            session.setAttribute("errorMsg", "Error saving file: " + e.getMessage());
         }
 
         return "redirect:/admin/loadAddProduct";
