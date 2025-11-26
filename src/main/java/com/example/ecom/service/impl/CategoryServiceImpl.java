@@ -76,7 +76,12 @@ public class CategoryServiceImpl implements CategoryService {
     }
     @Override
     public Boolean deleteCategory(int id) {
-        return null;
+        Category category = categoryRepository.findById(id).orElse(null);
+        if(!ObjectUtils.isEmpty(category)) {
+            categoryRepository.delete(category);
+            return true;
+        }
+        return false;
     }
     @Override
     public Boolean existCategory(String name) {
@@ -87,6 +92,10 @@ public class CategoryServiceImpl implements CategoryService {
     public Page<Category> getAllCategorPagination(Integer pageNo, Integer pageSize) {
         return categoryRepository.findAll(PageRequest.of(pageNo, pageSize));
     }
-
+    @Override
+    public Category getCategoryById(int id) {
+        Category category = categoryRepository.findById(id).orElse(null);
+        return category;
+    }
 
 }
