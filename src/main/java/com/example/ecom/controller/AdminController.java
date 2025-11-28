@@ -13,23 +13,18 @@ import com.example.ecom.model.Product;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.ObjectUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.example.ecom.service.CategoryService;
 import com.example.ecom.service.ProductService;
 
 import jakarta.servlet.http.HttpSession;
-
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
 @Controller
 @RequestMapping("/admin")
@@ -56,7 +51,7 @@ public class AdminController {
     @GetMapping("/category")
     public String category(Model m, @RequestParam(name = "pageNo", defaultValue = "0") Integer pageNo,
             @RequestParam(name = "pageSize", defaultValue = "10") Integer pageSize) {
-        // m.addAttribute("categorys", categoryService.getAllCategory());
+        m.addAttribute("categorys", categoryService.getAllCategory());
         Page<Category> page = categoryService.getAllCategorPagination(pageNo, pageSize);
         List<Category> categorys = page.getContent();
         m.addAttribute("categorys", categorys);
@@ -81,6 +76,55 @@ public class AdminController {
                 session.setAttribute("errorMsg", "Error saving file: " + e.getMessage());
             }
         return "redirect:/admin/category";
+    }
+
+    @GetMapping("/deleteCategory/{id}")
+    public String deleteCategory(@PathVariable int id, HttpSession session) {
+        Boolean deteleCategory = categoryService.deleteCategory(id);
+        if (deteleCategory) {
+            session.setAttribute("successMsg", "Đã xóa sản phẩm thành công");
+        }
+        else {
+            session.setAttribute("errorMsg", "Đã có lỗi xảy ra trong quá trình xóa sản phẩm");
+        }
+        return "redirect:/admin/category";
+    }
+
+
+    @GetMapping("/loadEditCategory/{id}")
+    public String loadEditCategory(@PathVariable int id, Model m) {
+        m.addAttribute("category", categoryService.getCategoryById(id));
+        return "admin/editCategory";
+    }
+    @PostMapping("/updateCategory")
+    public String updateCategory(@ModelAttribute Category category, @RequestParam("file") MultipartFile file){
+        Category oldCategory = categoryService.getCategoryById(category.getId());
+        String imageName = file.isEmpty() ? oldCategory.getImageName() : file.getOriginalFilename();
+
+        if (!ObjectUtils.isEmpty(category)) {
+            oldCategory.setName(category.getName());
+            oldCategory.setIsActive(category.getIsActive());
+            oldCategory.setImageName(imageName);
+
+        }
+        Category updateCategory = categoryService.saveCategory(oldCategory);
+
+        if(!ObjectUtils.isEmpty(updateCategory)){
+            if(!file.isEmpty()){
+                File saveFile = new ClassPathResource("static/img").getFile();
+
+                Path path = Paths.get(saveFile.getAbsolutePath() + File.separator + "category_img" + File.separator
+                        + file.getOriginalFilename());
+
+                Files.copy(file.getInputStream(),path, StandardCopyOption.REPLACE_EXISTING);
+            }
+
+            }
+            session.setAttribute("succMsg","Cập nhật sản phẩm thành công");
+        }else{
+            session.setAttribute("errorMsg","Đã có lỗi xảy ra trong quá trình xóa sản phẩm");
+        }
+        return "redirect:/admin/loadEditCategory/" + category.getId();
     }
 
     @PostMapping("/saveProduct")

@@ -22,4 +22,6 @@ public interface CategoryService {
     Page<Category> getAllCategorPagination(Integer pageNo, Integer pageSize);
 
 	public List<Category> getAllActiveCategory();
+
+    public Category getCategoryById(int id);
 }
