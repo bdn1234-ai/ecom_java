@@ -97,7 +97,8 @@ public class AdminController {
         return "admin/editCategory";
     }
     @PostMapping("/updateCategory")
-    public String updateCategory(@ModelAttribute Category category, @RequestParam("file") MultipartFile file){
+    public String updateCategory(@ModelAttribute Category category, @RequestParam("file") MultipartFile file,
+        HttpSession session) throws IOException{
         Category oldCategory = categoryService.getCategoryById(category.getId());
         String imageName = file.isEmpty() ? oldCategory.getImageName() : file.getOriginalFilename();
 
@@ -119,11 +120,12 @@ public class AdminController {
                 Files.copy(file.getInputStream(),path, StandardCopyOption.REPLACE_EXISTING);
             }
 
-            }
+            
             session.setAttribute("succMsg","Cập nhật sản phẩm thành công");
         }else{
             session.setAttribute("errorMsg","Đã có lỗi xảy ra trong quá trình xóa sản phẩm");
         }
+    
         return "redirect:/admin/loadEditCategory/" + category.getId();
     }
 
