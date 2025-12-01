@@ -75,7 +75,6 @@ public class CategoryServiceImpl implements CategoryService {
         return true;
     }
 
-    @Override
     public Category getCategoryById(int id) {
         return categoryRepository.findById(id).orElse(null);
     }
@@ -87,12 +86,10 @@ public class CategoryServiceImpl implements CategoryService {
                 .collect(Collectors.toList());
     }
 
-    @Override
     public Category saveCategory(Category category) {
         return categoryRepository.save(category);
     }
 
-    @Override
     public Boolean existCategory(String name) {
         return categoryRepository.existsByName(name);
     }

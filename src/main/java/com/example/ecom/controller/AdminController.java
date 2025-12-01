@@ -20,6 +20,7 @@ import org.springframework.ui.Model;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
@@ -159,7 +160,7 @@ public class AdminController {
         List<Product> products = page.getContent();
         m.addAttribute("products", products);
         m.addAttribute("productsSize", products.size());
-
+        m.addAttribute("products", productService.getAllProducts());
         m.addAttribute("pageNo", page.getNumber());
         m.addAttribute("pageSize", pageSize);
         m.addAttribute("totalElements", page.getTotalElements());
@@ -169,5 +170,16 @@ public class AdminController {
 
         return "admin/products";
     }
-    
+    @GetMapping("/deleteProduct/{id}")
+    public String loadViewProduct(@PathVariable int id, HttpSession session) {
+		Boolean deleteCategory = categoryService.deleteCategory(id);
+
+		if (deleteCategory) {
+			session.setAttribute("succMsg", "category delete success");
+		} else {
+			session.setAttribute("errorMsg", "something wrong on server");
+		}
+
+		return "redirect:/admin/category";
+	}
 }
