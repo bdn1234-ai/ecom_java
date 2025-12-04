@@ -14,15 +14,12 @@ import com.example.ecom.model.Product;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.ObjectUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.example.ecom.service.CategoryService;
@@ -85,6 +82,75 @@ public class AdminController {
                 session.setAttribute("errorMsg", "Error saving file: " + e.getMessage());
             }
         return "redirect:/admin/category";
+    }
+
+    @GetMapping("/deleteCategory/{id}")
+    public String deleteCategory(@PathVariable int id, HttpSession session) {
+        Boolean deteleCategory = categoryService.deleteCategory(id);
+        if (deteleCategory) {
+            session.setAttribute("successMsg", "Đã xóa sản phẩm thành công");
+        }
+        else {
+            session.setAttribute("errorMsg", "Đã có lỗi xảy ra trong quá trình xóa sản phẩm");
+        }
+        return "redirect:/admin/category";
+    }
+
+
+    @GetMapping("/loadEditCategory/{id}")
+    public String loadEditCategory(@PathVariable int id, Model m) {
+        m.addAttribute("category", categoryService.getCategoryById(id));
+        return "admin/edit_category";
+    }
+    @PostMapping("/updateCategory")
+    public String updateCategory(@ModelAttribute Category category,
+                                 @RequestParam("file") MultipartFile file,
+                                 HttpSession session) {
+        try {
+            // 1. Kiểm tra danh mục cũ có tồn tại không
+            Category oldCategory = categoryService.getCategoryById(category.getId());
+            if (oldCategory == null) {
+                session.setAttribute("errorMsg", "Danh mục không tồn tại!");
+                return "redirect:/admin/categories"; // Hoặc trang danh sách phù hợp
+            }
+
+            // 2. Cập nhật thông tin cơ bản
+            oldCategory.setName(category.getName());
+            oldCategory.setIsActive(category.getIsActive());
+
+            // 3. Xử lý logic ảnh (chỉ cập nhật tên ảnh nếu có file mới upload)
+            String imageName = oldCategory.getImageName(); // Mặc định giữ ảnh cũ
+            if (!file.isEmpty()) {
+                imageName = file.getOriginalFilename();
+                oldCategory.setImageName(imageName);
+            }
+
+            // 4. Lưu vào Database
+            Category updateCategory = categoryService.saveCategory(oldCategory);
+
+            if (!ObjectUtils.isEmpty(updateCategory)) {
+                // 5. Lưu file vào ổ cứng (Chỉ chạy khi có file mới và DB đã lưu thành công)
+                if (!file.isEmpty()) {
+                    File saveFile = new ClassPathResource("static/img").getFile();
+
+                    // Tạo đường dẫn lưu file: static/img/category_img/filename.jpg
+                    Path path = Paths.get(saveFile.getAbsolutePath() + File.separator + "category_img" + File.separator
+                            + file.getOriginalFilename());
+
+                    Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
+                }
+
+                session.setAttribute("succMsg", "Cập nhật danh mục thành công");
+            } else {
+                session.setAttribute("errorMsg", "Đã có lỗi xảy ra trong quá trình cập nhật (Database)");
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            session.setAttribute("errorMsg", "Lỗi hệ thống: " + e.getMessage());
+        }
+
+        return "redirect:/admin/loadEditCategory/" + category.getId();
     }
 
     @PostMapping("/saveProduct")

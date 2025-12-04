@@ -9,13 +9,14 @@ import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.stream.Collectors;
 import com.example.ecom.model.Category;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-
+import com.example.ecom.model.Category;
 import com.example.ecom.repository.CategoryRepository;
 import com.example.ecom.service.CategoryService;
 import org.springframework.util.ObjectUtils;
@@ -60,19 +61,31 @@ public class CategoryServiceImpl implements CategoryService {
             }
     }
 
-
-
     @Override
     public List<Category> getAllCategory() {
         return categoryRepository.findAll();
     }
     @Override
+    public Category saveCategory(Category category) {
+        return categoryRepository.save(category);
+    }
+    @Override
+    public List<Category> getAllActiveCategory() {
+        List<Category> categories = categoryRepository.findByIsActiveTrue();
+		return categories;
+    }
+    @Override
     public Boolean deleteCategory(int id) {
-        if (!categoryRepository.existsById(id)) {
-            return false;
+        Category category = categoryRepository.findById(id).orElse(null);
+        if(!ObjectUtils.isEmpty(category)) {
+            categoryRepository.delete(category);
+            return true;
         }
-        categoryRepository.deleteById(id);
-        return true;
+        return false;
+    }
+    @Override
+    public Boolean existCategory(String name) {
+        return categoryRepository.existsByName(name);
     }
 
     public Category getCategoryById(int id) {
@@ -97,6 +110,10 @@ public class CategoryServiceImpl implements CategoryService {
     public Page<Category> getAllCategoryPagination(Integer pageNo, Integer pageSize) {
         return categoryRepository.findAll(PageRequest.of(pageNo, pageSize));
     }
-
+    @Override
+    public Category getCategoryById(int id) {
+        Category category = categoryRepository.findById(id).orElse(null);
+        return category;
+    }
 
 }
