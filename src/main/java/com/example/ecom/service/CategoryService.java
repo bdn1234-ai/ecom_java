@@ -5,8 +5,12 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.example.ecom.model.Category;
+import org.springframework.stereotype.Service;
+import org.springframework.data.domain.Page;
+
 import org.springframework.data.domain.Page;
 import org.springframework.web.multipart.MultipartFile;
+
 @Service
 public interface CategoryService {
 
@@ -21,8 +25,10 @@ public interface CategoryService {
     void createCategory(Category category, MultipartFile file);
 
     Boolean deleteCategory(int id);
-    Page<Category> getAllCategorPagination(Integer pageNo, Integer pageSize);
+
+	// public Category getCategoryById(int id);
 
 	public List<Category> getAllActiveCategory();
 
+	Page<Category> getAllCategoryPagination(Integer pageNo,Integer pageSize);
 }

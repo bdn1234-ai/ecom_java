@@ -7,6 +7,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
+import java.util.stream.Collectors;
+import com.example.ecom.model.Category;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -86,8 +88,26 @@ public class CategoryServiceImpl implements CategoryService {
         return categoryRepository.existsByName(name);
     }
 
+    public Category getCategoryById(int id) {
+        return categoryRepository.findById(id).orElse(null);
+    }
+
     @Override
-    public Page<Category> getAllCategorPagination(Integer pageNo, Integer pageSize) {
+    public List<Category> getAllActiveCategory() {
+        return categoryRepository.findAll().stream()
+                .filter(c -> Boolean.TRUE.equals(c.getIsActive()))
+                .collect(Collectors.toList());
+    }
+
+    public Category saveCategory(Category category) {
+        return categoryRepository.save(category);
+    }
+
+    public Boolean existCategory(String name) {
+        return categoryRepository.existsByName(name);
+    }
+    @Override
+    public Page<Category> getAllCategoryPagination(Integer pageNo, Integer pageSize) {
         return categoryRepository.findAll(PageRequest.of(pageNo, pageSize));
     }
     @Override
