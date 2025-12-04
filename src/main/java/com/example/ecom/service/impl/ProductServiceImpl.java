@@ -107,17 +107,7 @@ public class ProductServiceImpl implements ProductService {
 		return null;
 	}
 
-	@Override
-	public List<Product> getAllActiveProducts(String category) {
-		List<Product> products = null;
-		if (ObjectUtils.isEmpty(category)) {
-			products = productRepository.findByIsActiveTrue();
-		} else {
-			products = productRepository.findByCategory(category);
-		}
 
-		return products;
-	}
 
 	@Override
 	public List<Product> searchProduct(String ch) {
@@ -156,40 +146,6 @@ public class ProductServiceImpl implements ProductService {
 		return pageProduct;
 	}
 
-		Product dbProduct = getProductById(product.getId().intValue());
-
-		String imageName = image.isEmpty() ? dbProduct.getImage() : image.getOriginalFilename();
-
-		dbProduct.setTitle(product.getTitle());
-		dbProduct.setDescription(product.getDescription());
-		dbProduct.setCategory(product.getCategory());
-		dbProduct.setPrice(product.getPrice());
-		dbProduct.setStock(product.getStock());
-		dbProduct.setImage(imageName);
-		
-		Product updateProduct = productRepository.save(dbProduct);
-
-		if (!ObjectUtils.isEmpty(updateProduct)) {
-
-			if (!image.isEmpty()) {
-
-				try {
-					File saveFile = new ClassPathResource("static/img").getFile();
-
-					Path path = Paths.get(saveFile.getAbsolutePath() + File.separator + "product_img" + File.separator
-							+ image.getOriginalFilename());
-					Files.copy(image.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
-
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-
-			}
-			return product;
-		}
-
-		return null;
-	}
 
     @Override
     public List<Product> getAllActiveProducts(String category) {

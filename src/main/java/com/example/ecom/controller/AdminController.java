@@ -237,15 +237,15 @@ public class AdminController {
         return "admin/products";
     }
     @GetMapping("/deleteProduct/{id}")
-    public String loadViewProduct(@PathVariable int id, HttpSession session) {
-		Boolean deleteCategory = categoryService.deleteCategory(id);
+    public String deleteProduct(@PathVariable int id, HttpSession session) {
+		Boolean deleteProduct = productService.deleteProduct(id);
 
-		if (deleteCategory) {
-			session.setAttribute("succMsg", "category delete success");
+		if (deleteProduct) {
+			session.setAttribute("succMsg", "product delete success");
 		} else {
 			session.setAttribute("errorMsg", "something wrong on server");
 		}
 
-		return "redirect:/admin/category";
+		return "redirect:/admin/products";
 	}
 }

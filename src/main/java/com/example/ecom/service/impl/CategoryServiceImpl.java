@@ -88,24 +88,6 @@ public class CategoryServiceImpl implements CategoryService {
         return categoryRepository.existsByName(name);
     }
 
-    public Category getCategoryById(int id) {
-        return categoryRepository.findById(id).orElse(null);
-    }
-
-    @Override
-    public List<Category> getAllActiveCategory() {
-        return categoryRepository.findAll().stream()
-                .filter(c -> Boolean.TRUE.equals(c.getIsActive()))
-                .collect(Collectors.toList());
-    }
-
-    public Category saveCategory(Category category) {
-        return categoryRepository.save(category);
-    }
-
-    public Boolean existCategory(String name) {
-        return categoryRepository.existsByName(name);
-    }
     @Override
     public Page<Category> getAllCategoryPagination(Integer pageNo, Integer pageSize) {
         return categoryRepository.findAll(PageRequest.of(pageNo, pageSize));
