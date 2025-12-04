@@ -2,14 +2,29 @@ package com.example.ecom.repository;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.example.ecom.model.Product;
 
 public interface ProductRepository extends JpaRepository<Product, Integer> {
-    List<Product> findByIsActiveTrue();
 
-    List<Product> findByCategory(String category);
+	List<Product> findByIsActiveTrue();
 
-    public Boolean existsByTitle(String title);
+	Page<Product> findByIsActiveTrue(Pageable pageable);
+
+	List<Product> findByCategory(String category);
+
+	List<Product> findByTitleContainingIgnoreCaseOrCategoryContainingIgnoreCase(String ch, String ch2);
+
+	Page<Product> findByCategory(String category, Pageable pageable);
+
+	Page<Product> findByTitleContainingIgnoreCaseOrCategoryContainingIgnoreCase(String ch, String ch2,
+			Pageable pageable);
+
+	    Page<Product> findByIsActiveTrueAndTitleContainingIgnoreCaseOrCategoryContainingIgnoreCase(String ch, String ch2,
+		    Pageable pageable);
+
+    Boolean existsByTitle(String title);
 }

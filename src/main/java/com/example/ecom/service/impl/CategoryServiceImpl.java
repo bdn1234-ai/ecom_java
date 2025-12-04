@@ -7,6 +7,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
+import java.util.stream.Collectors;
+import com.example.ecom.model.Category;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -59,8 +61,6 @@ public class CategoryServiceImpl implements CategoryService {
             }
     }
 
-
-
     @Override
     public List<Category> getAllCategory() {
         return categoryRepository.findAll();
@@ -89,7 +89,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public Page<Category> getAllCategorPagination(Integer pageNo, Integer pageSize) {
+    public Page<Category> getAllCategoryPagination(Integer pageNo, Integer pageSize) {
         return categoryRepository.findAll(PageRequest.of(pageNo, pageSize));
     }
     @Override

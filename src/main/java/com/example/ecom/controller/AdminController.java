@@ -6,6 +6,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.Map;
 import java.util.List;
 
 import com.example.ecom.model.Category;
@@ -25,6 +26,11 @@ import com.example.ecom.service.CategoryService;
 import com.example.ecom.service.ProductService;
 
 import jakarta.servlet.http.HttpSession;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.ui.Model;
+import java.util.List;
+import org.springframework.data.domain.Page;
+import com.example.ecom.model.Product;
 
 @Controller
 @RequestMapping("/admin")
@@ -34,8 +40,8 @@ public class AdminController {
     private CategoryService categoryService;
 
     @Autowired
-    private ProductService productService;
-
+	private ProductService productService;
+    
     @GetMapping()
     public String index() {
         return "admin/index";
@@ -51,8 +57,8 @@ public class AdminController {
     @GetMapping("/category")
     public String category(Model m, @RequestParam(name = "pageNo", defaultValue = "0") Integer pageNo,
             @RequestParam(name = "pageSize", defaultValue = "10") Integer pageSize) {
-        m.addAttribute("categorys", categoryService.getAllCategory());
-        Page<Category> page = categoryService.getAllCategorPagination(pageNo, pageSize);
+        // m.addAttribute("categorys", categoryService.getAllCategory());
+        Page<Category> page = categoryService.getAllCategoryPagination(pageNo, pageSize);
         List<Category> categorys = page.getContent();
         m.addAttribute("categorys", categorys);
 
@@ -94,38 +100,56 @@ public class AdminController {
     @GetMapping("/loadEditCategory/{id}")
     public String loadEditCategory(@PathVariable int id, Model m) {
         m.addAttribute("category", categoryService.getCategoryById(id));
-        return "admin/editCategory";
+        return "admin/edit_category";
     }
     @PostMapping("/updateCategory")
-    public String updateCategory(@ModelAttribute Category category, @RequestParam("file") MultipartFile file,
-        HttpSession session) throws IOException{
-        Category oldCategory = categoryService.getCategoryById(category.getId());
-        String imageName = file.isEmpty() ? oldCategory.getImageName() : file.getOriginalFilename();
-
-        if (!ObjectUtils.isEmpty(category)) {
-            oldCategory.setName(category.getName());
-            oldCategory.setIsActive(category.getIsActive());
-            oldCategory.setImageName(imageName);
-
-        }
-        Category updateCategory = categoryService.saveCategory(oldCategory);
-
-        if(!ObjectUtils.isEmpty(updateCategory)){
-            if(!file.isEmpty()){
-                File saveFile = new ClassPathResource("static/img").getFile();
-
-                Path path = Paths.get(saveFile.getAbsolutePath() + File.separator + "category_img" + File.separator
-                        + file.getOriginalFilename());
-
-                Files.copy(file.getInputStream(),path, StandardCopyOption.REPLACE_EXISTING);
+    public String updateCategory(@ModelAttribute Category category,
+                                 @RequestParam("file") MultipartFile file,
+                                 HttpSession session) {
+        try {
+            // 1. Kiểm tra danh mục cũ có tồn tại không
+            Category oldCategory = categoryService.getCategoryById(category.getId());
+            if (oldCategory == null) {
+                session.setAttribute("errorMsg", "Danh mục không tồn tại!");
+                return "redirect:/admin/categories"; // Hoặc trang danh sách phù hợp
             }
 
-            
-            session.setAttribute("succMsg","Cập nhật sản phẩm thành công");
-        }else{
-            session.setAttribute("errorMsg","Đã có lỗi xảy ra trong quá trình xóa sản phẩm");
+            // 2. Cập nhật thông tin cơ bản
+            oldCategory.setName(category.getName());
+            oldCategory.setIsActive(category.getIsActive());
+
+            // 3. Xử lý logic ảnh (chỉ cập nhật tên ảnh nếu có file mới upload)
+            String imageName = oldCategory.getImageName(); // Mặc định giữ ảnh cũ
+            if (!file.isEmpty()) {
+                imageName = file.getOriginalFilename();
+                oldCategory.setImageName(imageName);
+            }
+
+            // 4. Lưu vào Database
+            Category updateCategory = categoryService.saveCategory(oldCategory);
+
+            if (!ObjectUtils.isEmpty(updateCategory)) {
+                // 5. Lưu file vào ổ cứng (Chỉ chạy khi có file mới và DB đã lưu thành công)
+                if (!file.isEmpty()) {
+                    File saveFile = new ClassPathResource("static/img").getFile();
+
+                    // Tạo đường dẫn lưu file: static/img/category_img/filename.jpg
+                    Path path = Paths.get(saveFile.getAbsolutePath() + File.separator + "category_img" + File.separator
+                            + file.getOriginalFilename());
+
+                    Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
+                }
+
+                session.setAttribute("succMsg", "Cập nhật danh mục thành công");
+            } else {
+                session.setAttribute("errorMsg", "Đã có lỗi xảy ra trong quá trình cập nhật (Database)");
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            session.setAttribute("errorMsg", "Lỗi hệ thống: " + e.getMessage());
         }
-    
+
         return "redirect:/admin/loadEditCategory/" + category.getId();
     }
 
@@ -186,4 +210,42 @@ public class AdminController {
 
         return "redirect:/admin/loadAddProduct";
     }
+    @GetMapping("/products")
+    public String loadViewProduct(Model m,
+                                  @RequestParam(name = "pageNo", defaultValue = "0") Integer pageNo,
+                                  @RequestParam(name = "pageSize", defaultValue = "12") Integer pageSize,
+                                  @RequestParam(defaultValue = "") String ch) {
+
+        Page<Product> page = null;
+        if (ch == null || ch.isBlank()) {
+            page = productService.getAllActiveProductPagination(pageNo, pageSize, "");
+        } else {
+            page = productService.searchActiveProductPagination(pageNo, pageSize, "", ch);
+        }
+
+        List<Product> products = page.getContent();
+        m.addAttribute("products", products);
+        m.addAttribute("productsSize", products.size());
+        m.addAttribute("products", productService.getAllProducts());
+        m.addAttribute("pageNo", page.getNumber());
+        m.addAttribute("pageSize", pageSize);
+        m.addAttribute("totalElements", page.getTotalElements());
+        m.addAttribute("totalPages", page.getTotalPages());
+        m.addAttribute("isFirst", page.isFirst());
+        m.addAttribute("isLast", page.isLast());
+
+        return "admin/products";
+    }
+    @GetMapping("/deleteProduct/{id}")
+    public String deleteProduct(@PathVariable int id, HttpSession session) {
+		Boolean deleteProduct = productService.deleteProduct(id);
+
+		if (deleteProduct) {
+			session.setAttribute("succMsg", "product delete success");
+		} else {
+			session.setAttribute("errorMsg", "something wrong on server");
+		}
+
+		return "redirect:/admin/products";
+	}
 }
