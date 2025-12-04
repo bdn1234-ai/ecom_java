@@ -1,6 +1,7 @@
 package com.example.ecom.model;
 
 import lombok.Data;
+import lombok.ToString;
 
 @Data
 public class OrderRequest {
