@@ -2,33 +2,26 @@ package com.example.ecom.service;
 
 import java.util.List;
 
-import org.springframework.stereotype.Service;
-
-import com.example.ecom.model.Category;
-import org.springframework.stereotype.Service;
-import org.springframework.data.domain.Page;
-
 import org.springframework.data.domain.Page;
 import org.springframework.web.multipart.MultipartFile;
 
-@Service
+import com.example.ecom.model.Category;
+
 public interface CategoryService {
 
 	public Category saveCategory(Category category);
 
 	public Boolean existCategory(String name);
 
-	List<Category> getAllCategory();
-    Category getCategoryById(int id);
+	public List<Category> getAllCategory();
+	
+	public Category getCategoryById(int id);
 
+	public void createCategory(Category category, MultipartFile file);
 
-    void createCategory(Category category, MultipartFile file);
-
-    Boolean deleteCategory(int id);
-
-	// public Category getCategoryById(int id);
+	public Boolean deleteCategory(int id);
 
 	public List<Category> getAllActiveCategory();
 
-	Page<Category> getAllCategoryPagination(Integer pageNo,Integer pageSize);
+	public Page<Category> getAllCategoryPagination(Integer pageNo, Integer pageSize);
 }

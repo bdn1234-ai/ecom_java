@@ -1,7 +1,5 @@
 package com.example.ecom.utils;
 
-import org.springframework.data.relational.core.sql.In;
-
 public enum OrderStatus {
 
     IN_PROGRESS(1, "In Progress"),

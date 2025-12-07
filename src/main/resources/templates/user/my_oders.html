@@ -43,7 +43,7 @@
 								</td>
 								<td>[[${o.status}]]</td>
 								<td><th:block th:if="${o.status!='Cancelled'}">
-										<a th:href="@{'/user/update-status?id='+${o.id}+'&st=6' }"
+										<a th:href="@{'/update-status?id='+${o.id}+'&st=6' }"
 											class="btn btn-sm btn-danger">Cancel</a>
 									</th:block> <th:block th:unless="${o.status!='Cancelled'}">
 										<a href="#" class="btn btn-sm btn-danger disabled" >Cancel</a>
