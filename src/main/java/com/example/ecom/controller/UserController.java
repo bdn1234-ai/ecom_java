@@ -25,6 +25,9 @@ import com.example.ecom.utils.OrderStatus;
 
 import jakarta.servlet.http.HttpSession;
 
+import org.springframework.stereotype.Controller;
+
+@Controller
 public class UserController {
     @Autowired
 	private UserService userService;
@@ -37,8 +40,8 @@ public class UserController {
 	@Autowired
 	private OrderService orderService;
 
-	@GetMapping("/")
-	public String home() {
+	@GetMapping("/user/home")
+	public String userHome() {
 		return "user/home";
 	}
 
@@ -70,6 +73,10 @@ public class UserController {
 
 	@GetMapping("/cart")
 	public String loadCartPage(Principal p, Model m) {
+		// If the user is not authenticated, send them to login page to avoid NPE
+		if (p == null) {
+			return "redirect:/login";
+		}
 
 		User user = getLoggedInUserDetails(p);
 		List<Cart> carts = cartService.getCartsByUser(user.getId());
