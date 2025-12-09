@@ -15,6 +15,8 @@ public interface CategoryService {
 	public Boolean existCategory(String name);
 
 	List<Category> getAllCategory();
+    Category getCategoryById(int id);
+
 
     void createCategory(Category category, MultipartFile file);
 
@@ -23,5 +25,4 @@ public interface CategoryService {
 
 	public List<Category> getAllActiveCategory();
 
-    public Category getCategoryById(int id);
 }
