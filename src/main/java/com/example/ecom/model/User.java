@@ -1,27 +1,30 @@
 package com.example.ecom.model;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.Builder;
 
 import java.util.Date;
 
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Getter
 @Setter
-@Builder
 @Entity
 public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 
-    @Column(unique = true)
     private String username;
 
     private String name;
@@ -44,6 +47,14 @@ public class User {
 
     private String role;
 
+    private Boolean isEnable;
 
+	private Boolean accountNonLocked;
+
+	private Integer failedAttempt;
+
+	private Date lockTime;
+	
+	private String resetToken;
 
 }

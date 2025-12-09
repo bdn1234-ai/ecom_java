@@ -7,14 +7,18 @@ import com.example.ecom.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 
-public interface UserRepository extends JpaRepository<User, Long> {
+public interface UserRepository extends JpaRepository<User, Integer> {
 
-    Optional<User> findByUsername(String username);
+	public User findByEmail(String email);
 
-    User findByEmail(String email);
+	public List<User> findByRole(String role);
 
-    List<User> findByRole(String role);
+	public User findByResetToken(String token);
 
+	public Boolean existsByEmail(String email);
 
-    Boolean existsByUsername(String email);
+	// Added to support username-based lookup used in authentication
+	public Optional<User> findByUsername(String username);
+
+	public Boolean existsByUsername(String username);
 }

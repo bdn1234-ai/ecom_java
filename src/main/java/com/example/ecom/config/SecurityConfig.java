@@ -37,8 +37,10 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         // Các đường dẫn public
                         .requestMatchers("/",
-                                "/products",
-                                "/login", "/register", "/css/**", "/js/**", "/images/**").permitAll()
+                                "/products", "/product/**",
+                                "/login", "/register", 
+                                "/css/**", "/js/**", "/images/**", "/img/**",
+                                "/categories", "/categories/**").permitAll()
 
             // Chỉ ADMIN mới được truy cập /admin/**
             .requestMatchers("/admin/**").hasRole("ADMIN")
@@ -48,7 +50,7 @@ public class SecurityConfig {
         )
                 .formLogin(form -> form
                         .loginPage("/login")
-                        .defaultSuccessUrl("/")
+                        .defaultSuccessUrl("/", true)
                         .permitAll()
                 )
                 .logout(logout -> logout

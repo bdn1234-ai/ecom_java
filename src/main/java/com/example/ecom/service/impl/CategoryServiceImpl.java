@@ -7,20 +7,17 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
-import java.util.stream.Collectors;
-import com.example.ecom.model.Category;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.example.ecom.model.Category;
 import com.example.ecom.repository.CategoryRepository;
 import com.example.ecom.service.CategoryService;
-import org.springframework.util.ObjectUtils;
-import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class CategoryServiceImpl implements CategoryService {
@@ -56,7 +53,6 @@ public class CategoryServiceImpl implements CategoryService {
 
 
             } catch (IOException e) {
-                e.printStackTrace();
                 throw new RuntimeException("Error saving file: " + e.getMessage());
             }
     }
@@ -88,24 +84,6 @@ public class CategoryServiceImpl implements CategoryService {
         return categoryRepository.existsByName(name);
     }
 
-    public Category getCategoryById(int id) {
-        return categoryRepository.findById(id).orElse(null);
-    }
-
-    @Override
-    public List<Category> getAllActiveCategory() {
-        return categoryRepository.findAll().stream()
-                .filter(c -> Boolean.TRUE.equals(c.getIsActive()))
-                .collect(Collectors.toList());
-    }
-
-    public Category saveCategory(Category category) {
-        return categoryRepository.save(category);
-    }
-
-    public Boolean existCategory(String name) {
-        return categoryRepository.existsByName(name);
-    }
     @Override
     public Page<Category> getAllCategoryPagination(Integer pageNo, Integer pageSize) {
         return categoryRepository.findAll(PageRequest.of(pageNo, pageSize));

@@ -9,15 +9,15 @@ import java.util.Arrays;
 import java.util.Collection;
 
 public class CustomUser implements UserDetails {
-    private Long id;
-    private String name;
+    private Integer id;
+    private String username;
     private String email;
     private String password;
     private Collection<? extends GrantedAuthority> authorities;
 
     public CustomUser(User user) {
         this.id = user.getId();
-        this.name = user.getName();
+        this.username = user.getUsername();
         this.email = user.getEmail();
         this.password = user.getPassword();
         this.authorities = Arrays.asList(new SimpleGrantedAuthority("ROLE_" + user.getRole()));
@@ -25,7 +25,7 @@ public class CustomUser implements UserDetails {
 
 
 
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
@@ -41,7 +41,7 @@ public class CustomUser implements UserDetails {
 
     @Override
     public String getUsername() {
-        return name;
+        return username;
     }
 
     @Override

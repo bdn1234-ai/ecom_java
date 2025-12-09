@@ -1,30 +1,35 @@
 package com.example.ecom.model;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+
 import lombok.Data;
 
 @Data
 @Entity
 public class OrderAddress {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+   @Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Integer id;
 
-    private String firstName;
+	private String firstName;
 
-    private String lastName;
+	private String lastName;
 
-    private String email;
+	private String email;
 
-    private String mobileNo;
+	private String mobileNo;
 
-    private String address;
+	private String address;
 
-    private String city;
+	private String city;
 
-    private String state;
+	private String state;
 
-    private String pincode;
+	private String pincode;
+    
 
 }
