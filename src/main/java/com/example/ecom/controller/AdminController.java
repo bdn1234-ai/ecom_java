@@ -11,6 +11,7 @@ import java.util.List;
 
 import com.example.ecom.model.Category;
 import com.example.ecom.model.Product;
+import com.example.ecom.model.ProductOrder;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -24,9 +25,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.example.ecom.service.CategoryService;
 import com.example.ecom.service.ProductService;
+import com.example.ecom.service.OrderService;
 
 import jakarta.servlet.http.HttpSession;
-import org.springframework.web.bind.annotation.PostMapping;
+
 import org.springframework.ui.Model;
 import java.util.List;
 import org.springframework.data.domain.Page;
@@ -41,6 +43,9 @@ public class AdminController {
 
     @Autowired
 	private ProductService productService;
+
+    @Autowired 
+    private OrderService orderService;
     
     @GetMapping()
     public String index() {
@@ -247,5 +252,43 @@ public class AdminController {
 		}
 
 		return "redirect:/admin/products";
+	}
+
+    @GetMapping("/search-order")
+	public String searchProduct(@RequestParam String orderId, Model m, HttpSession session,
+			@RequestParam(name = "pageNo", defaultValue = "0") Integer pageNo,
+			@RequestParam(name = "pageSize", defaultValue = "10") Integer pageSize) {
+
+		if (orderId != null && orderId.length() > 0) {
+
+			ProductOrder order = orderService.getOrdersByOrderId(orderId.trim());
+
+			if (ObjectUtils.isEmpty(order)) {
+				session.setAttribute("errorMsg", "Incorrect orderId");
+				m.addAttribute("orderDtls", null);
+			} else {
+				m.addAttribute("orderDtls", order);
+			}
+
+			m.addAttribute("srch", true);
+		} else {
+//			List<ProductOrder> allOrders = orderService.getAllOrders();
+//			m.addAttribute("orders", allOrders);
+//			m.addAttribute("srch", false);
+
+			Page<ProductOrder> page = orderService.getAllOrdersPagination(pageNo, pageSize);
+			m.addAttribute("orders", page);
+			m.addAttribute("srch", false);
+
+			m.addAttribute("pageNo", page.getNumber());
+			m.addAttribute("pageSize", pageSize);
+			m.addAttribute("totalElements", page.getTotalElements());
+			m.addAttribute("totalPages", page.getTotalPages());
+			m.addAttribute("isFirst", page.isFirst());
+			m.addAttribute("isLast", page.isLast());
+
+		}
+		return "/admin/orders";
+
 	}
 }

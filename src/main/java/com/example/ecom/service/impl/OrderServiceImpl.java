@@ -1,13 +1,16 @@
 package com.example.ecom.service.impl;
 
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 
 import com.example.ecom.model.Cart;
 import com.example.ecom.model.OrderAddress;
@@ -81,5 +84,22 @@ public class OrderServiceImpl implements OrderService {
 		}
 		return false;
     }
+
+    @Override
+	public List<ProductOrder> getAllOrders() {
+		return orderRepository.findAll();
+	}
+
+	@Override
+	public Page<ProductOrder> getAllOrdersPagination(Integer pageNo, Integer pageSize) {
+		Pageable pageable = PageRequest.of(pageNo, pageSize);
+		return orderRepository.findAll(pageable);
+
+	}
+
+	@Override
+	public ProductOrder getOrdersByOrderId(String orderId) {
+		return orderRepository.findByOrderId(orderId);
+	}
 
 }
