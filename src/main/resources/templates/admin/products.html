@@ -29,10 +29,10 @@
 				</th:block>
 				<div class="col-md-4 p-3">
 
-					<form action="/admin/products" method="get">
+					<form action="/admin/search-products" method="get">
 						<div class="row">
 							<div class="col">
-								<input type="text" class="form-control " name="ch">
+								<input type="text" class="form-control" name="ch" th:value="${ch}">
 							</div>
 							<div class="col">
 								<button class="btn btn-primary col">Tìm kiếm</button>
@@ -91,25 +91,30 @@
 
 							<nav aria-label="Page navigation example">
 								<ul class="pagination">
-									<li class="page-item"
-										th:classappend="${isFirst} ? 'disabled':''"><a
-										class="page-link"
-										th:href="@{'/admin/products?pageNo='+${pageNo-1}}"
-										aria-label="Previous"> <span aria-hidden="true">&laquo;</span>
-									</a></li>
-
-									<li th:each="i : ${#numbers.sequence(1,totalPages)}"
-										class="page-item" th:classappend="${pageNo+1==i} ? 'active' : ''">
+									<li class="page-item" th:classappend="${isFirst} ? 'disabled':''">
 										<a class="page-link"
-										   th:href="@{'/admin/products?pageNo=' + ${i-1}}">[[${i}]]</a>
+										   th:href="@{'/admin/products'(pageNo=${pageNo - 1}, ch=${ch})}"
+										   aria-label="Previous">
+											<span aria-hidden="true">&laquo;</span>
+										</a>
 									</li>
 
-									<li class="page-item"
-										th:classappend="${isLast} ? 'disabled':''"><a
-										class="page-link"
-										th:href="@{'/admin/products?pageNo='+${pageNo+1}}"
-										aria-label="Next"> <span aria-hidden="true">&raquo;</span>
-									</a></li>
+									<li th:each="i : ${#numbers.sequence(1, totalPages)}"
+										class="page-item"
+										th:classappend="${pageNo+1==i} ? 'active' : ''">
+										<a class="page-link"
+										   th:href="@{'/admin/products'(pageNo=${i - 1}, ch=${ch})}">
+											[[${i}]]
+										</a>
+									</li>
+
+									<li class="page-item" th:classappend="${isLast} ? 'disabled':''">
+										<a class="page-link"
+										   th:href="@{'/admin/products'(pageNo=${pageNo+1}, ch=${ch})}"
+										   aria-label="Next">
+											<span aria-hidden="true">&raquo;</span>
+										</a>
+									</li>
 								</ul>
 							</nav>
 						</div>

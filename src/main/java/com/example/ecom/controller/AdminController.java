@@ -242,6 +242,27 @@ public class AdminController {
 
         return "admin/products";
     }
+
+    @GetMapping("/search-products")
+    public String searchProduct(Model m,
+                                  @RequestParam(defaultValue = "") String ch, // Nhận từ khóa tìm kiếm
+                                  @RequestParam(defaultValue = "0") Integer pageNo) {
+
+        // Gọi service với tham số tìm kiếm
+        Page<Product> page = productService.searchProductPagination(pageNo, 10, ch); // Giả sử 10 item/trang
+
+        m.addAttribute("products", page.getContent());
+        m.addAttribute("totalElements", page.getTotalElements());
+        m.addAttribute("totalPages", page.getTotalPages());
+        m.addAttribute("isFirst", page.isFirst());
+        m.addAttribute("isLast", page.isLast());
+        m.addAttribute("pageNo", pageNo);
+
+        // QUAN TRỌNG: Gửi lại từ khóa ch ra view để giữ lại trong ô input và link phân trang
+        m.addAttribute("ch", ch);
+
+        return "admin/products"; // Tên file html của bạn
+    }
     @GetMapping("/deleteProduct/{id}")
     public String deleteProduct(@PathVariable int id, HttpSession session) {
 		Boolean deleteProduct = productService.deleteProduct(id);

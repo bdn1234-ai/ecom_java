@@ -24,10 +24,7 @@ public class HomeController {
     @Autowired
     private ProductService productService;
 
-    @GetMapping
-    public String home() {
-        return "home";
-    }
+
 
     @GetMapping("/search")
     public String searchProduct(@RequestParam String ch, Model m) {

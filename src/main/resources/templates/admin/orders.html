@@ -15,12 +15,12 @@
 					class="fa-solid fa-arrow-left"></i> Back</a>
 				<th:block th:if="${session.succMsg}">
 					<p class="text-success fw-bold text-center">[[${session.succMsg}]]</p>
-					<th:block th:text="${@commnServiceImpl.removeSessionMessage()}"></th:block>
+					<th:block th:text="${@commonServiceImpl.removeSessionMessage()}"></th:block>
 				</th:block>
 
 				<th:block th:if="${session.errorMsg}">
 					<p class="text-danger fw-bold text-center">[[${session.errorMsg}]]</p>
-					<th:block th:text="${@commnServiceImpl.removeSessionMessage()}"></th:block>
+					<th:block th:text="${@commonServiceImpl.removeSessionMessage()}"></th:block>
 				</th:block>
 				<div class="col-md-4 p-4">
 
@@ -177,14 +177,14 @@
 										<li class="page-item"
 											th:classappend="${isFirst} ? 'disabled':''"><a
 											class="page-link"
-											th:href="@{'/admin/orders?pageNo='+${pageNo-1}}"
+											th:href="@{'/admin/orders?pageNo='+${pageNo - 1}}"
 											aria-label="Previous"> <span aria-hidden="true">&laquo;</span>
 										</a></li>
 
 										<li th:each="i:${#numbers.sequence(1,totalPages)}"
 											class="page-item" th:classappend="${pageNo+1==i}?'active':''"
 											]]><a class="page-link"
-											th:href="@{'/admin/orders?pageNo='+${i-1}}">[[${i}]]</a></li>
+											th:href="@{'/admin/orders?pageNo='+${i - 1}}">[[${i}]]</a></li>
 
 										<li class="page-item"
 											th:classappend="${isLast} ? 'disabled':''"><a

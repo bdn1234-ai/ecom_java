@@ -4,6 +4,7 @@ import java.security.Principal;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,7 +17,6 @@ import com.example.ecom.model.Category;
 import com.example.ecom.model.OrderRequest;
 import com.example.ecom.model.ProductOrder;
 import com.example.ecom.model.User;
-import com.example.ecom.repository.CartRepository;
 import com.example.ecom.service.CartService;
 import com.example.ecom.service.CategoryService;
 import com.example.ecom.service.OrderService;
@@ -25,8 +25,9 @@ import com.example.ecom.utils.OrderStatus;
 
 import jakarta.servlet.http.HttpSession;
 
+@Controller
 public class UserController {
-    @Autowired
+	@Autowired
 	private UserService userService;
 	@Autowired
 	private CategoryService categoryService;
@@ -39,21 +40,7 @@ public class UserController {
 
 	@GetMapping("/")
 	public String home() {
-		return "user/home";
-	}
-
-	@ModelAttribute
-	public void getUserDetails(Principal p, Model m) {
-		if (p != null) {
-			String email = p.getName();
-			User user = userService.getUserByEmail(email);
-			m.addAttribute("user", user);
-			Integer countCart = cartService.getCountCart(user.getId());
-			m.addAttribute("countCart", countCart);
-		}
-
-		List<Category> allActiveCategory = categoryService.getAllActiveCategory();
-		m.addAttribute("categorys", allActiveCategory);
+		return "home";
 	}
 
 	@GetMapping("/addCart")
@@ -84,12 +71,12 @@ public class UserController {
 	@GetMapping("/cartQuantityUpdate")
 	public String updateCartQuantity(@RequestParam String sy, @RequestParam Integer cid) {
 		cartService.updateQuantity(sy, cid);
-		return "redirect:/user/cart";
+		return "redirect:/cart";
 	}
 
 	private User getLoggedInUserDetails(Principal p) {
-		String email = p.getName();
-		User userDtls = userService.getUserByEmail(email);
+		String username = p.getName();
+		User userDtls = userService.getUserByUsername(username);
 		return userDtls;
 	}
 
@@ -113,7 +100,7 @@ public class UserController {
 		User user = getLoggedInUserDetails(p);
 		orderService.saveOrder(user.getId(), request);
 
-		return "redirect:/user/success";
+		return "redirect:/success";
 	}
 
 	@GetMapping("/success")
@@ -148,6 +135,6 @@ public class UserController {
 		} else {
 			session.setAttribute("errorMsg", "status not updated");
 		}
-		return "redirect:/user/user-orders";
+		return "redirect:/user-orders";
 	}
 }
