@@ -26,7 +26,17 @@ import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.example.ecom.service.CategoryService;
+import com.example.ecom.service.ProductService;
+import com.example.ecom.service.OrderService;
+
 import jakarta.servlet.http.HttpSession;
+
+import org.springframework.ui.Model;
+import java.util.List;
+import org.springframework.data.domain.Page;
+import com.example.ecom.model.Product;
+
 
 @Controller
 @RequestMapping("/admin")
@@ -43,6 +53,9 @@ public class AdminController {
     
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired 
+    private OrderService orderService;
     
     @GetMapping()
     public String index() {
@@ -236,6 +249,27 @@ public class AdminController {
 
         return "admin/products";
     }
+
+    @GetMapping("/search-products")
+    public String searchProduct(Model m,
+                                  @RequestParam(defaultValue = "") String ch, // Nhận từ khóa tìm kiếm
+                                  @RequestParam(defaultValue = "0") Integer pageNo) {
+
+        // Gọi service với tham số tìm kiếm
+        Page<Product> page = productService.searchProductPagination(pageNo, 10, ch); // Giả sử 10 item/trang
+
+        m.addAttribute("products", page.getContent());
+        m.addAttribute("totalElements", page.getTotalElements());
+        m.addAttribute("totalPages", page.getTotalPages());
+        m.addAttribute("isFirst", page.isFirst());
+        m.addAttribute("isLast", page.isLast());
+        m.addAttribute("pageNo", pageNo);
+
+        // QUAN TRỌNG: Gửi lại từ khóa ch ra view để giữ lại trong ô input và link phân trang
+        m.addAttribute("ch", ch);
+
+        return "admin/products"; // Tên file html của bạn
+    }
     @GetMapping("/deleteProduct/{id}")
     public String deleteProduct(@PathVariable int id, HttpSession session) {
 		Boolean deleteProduct = productService.deleteProduct(id);
@@ -290,4 +324,42 @@ public class AdminController {
         User userDetails = userService.getUserByEmail(email);
         return userDetails;
     }
+
+    @GetMapping("/search-order")
+	public String searchProduct(@RequestParam String orderId, Model m, HttpSession session,
+			@RequestParam(name = "pageNo", defaultValue = "0") Integer pageNo,
+			@RequestParam(name = "pageSize", defaultValue = "10") Integer pageSize) {
+
+		if (orderId != null && orderId.length() > 0) {
+
+			ProductOrder order = orderService.getOrdersByOrderId(orderId.trim());
+
+			if (ObjectUtils.isEmpty(order)) {
+				session.setAttribute("errorMsg", "Incorrect orderId");
+				m.addAttribute("orderDtls", null);
+			} else {
+				m.addAttribute("orderDtls", order);
+			}
+
+			m.addAttribute("srch", true);
+		} else {
+//			List<ProductOrder> allOrders = orderService.getAllOrders();
+//			m.addAttribute("orders", allOrders);
+//			m.addAttribute("srch", false);
+
+			Page<ProductOrder> page = orderService.getAllOrdersPagination(pageNo, pageSize);
+			m.addAttribute("orders", page);
+			m.addAttribute("srch", false);
+
+			m.addAttribute("pageNo", page.getNumber());
+			m.addAttribute("pageSize", pageSize);
+			m.addAttribute("totalElements", page.getTotalElements());
+			m.addAttribute("totalPages", page.getTotalPages());
+			m.addAttribute("isFirst", page.isFirst());
+			m.addAttribute("isLast", page.isLast());
+
+		}
+		return "/admin/orders";
+
+	}
 }

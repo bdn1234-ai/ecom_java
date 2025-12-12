@@ -24,25 +24,22 @@ import com.example.ecom.utils.OrderStatus;
 
 import jakarta.servlet.http.HttpSession;
 
-import org.springframework.stereotype.Controller;
-
 @Controller
 public class UserController {
-    @Autowired
-    private UserService userService;
+	@Autowired
+	private UserService userService;
+	@Autowired
+	private CategoryService categoryService;
+
+	@Autowired
+	private CartService cartService;
 
     @Autowired
     private CartService cartService;
 
-    @Autowired
-    private OrderService orderService;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
-	@GetMapping("/user/home")
-	public String userHome() {
-		return "user/home";
+	@GetMapping("/")
+	public String home() {
+		return "home";
 	}
 
 	@GetMapping("/addCart")
@@ -79,8 +76,8 @@ public class UserController {
 	}
 
 	private User getLoggedInUserDetails(Principal p) {
-		String email = p.getName();
-		User userDtls = userService.getUserByEmail(email);
+		String username = p.getName();
+		User userDtls = userService.getUserByUsername(username);
 		return userDtls;
 	}
 

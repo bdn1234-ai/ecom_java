@@ -10,7 +10,7 @@ public interface UserService {
     public User saveUser(User user);
 
 	public User getUserByEmail(String email);
-
+	User getUserByUsername(String username);
 	public List<User> getUsers(String role);
 
 	public Boolean updateAccountStatus(Integer id, Boolean status);

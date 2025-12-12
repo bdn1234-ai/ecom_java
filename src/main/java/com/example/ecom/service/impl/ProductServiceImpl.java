@@ -16,6 +16,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
+
 import com.example.ecom.model.Product;
 import com.example.ecom.repository.ProductRepository;
 import com.example.ecom.service.ProductService;
@@ -109,8 +110,6 @@ public class ProductServiceImpl implements ProductService {
 		}
 		return null;
 	}
-
-
 
 	@Override
 	public List<Product> searchProduct(String ch) {
