@@ -1,6 +1,7 @@
 package com.example.ecom.service.impl;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -36,22 +37,22 @@ public class ProductServiceImpl implements ProductService {
 		return productRepository.findAll();
 	}
 
-  	@Override
-	public Page<Product> getAllProductsPagination(Integer pageNo, Integer pageSize) {
-		Pageable pageable = PageRequest.of(pageNo, pageSize);
-		return productRepository.findAll(pageable);
-	}
-
 	@Override
 	public Boolean deleteProduct(Integer id) {
 		Product product = productRepository.findById(id).orElse(null);
-
 		if (!ObjectUtils.isEmpty(product)) {
 			productRepository.delete(product);
 			return true;
 		}
 		return false;
+
+		}
+  @Override
+	public Page<Product> getAllProductsPagination(Integer pageNo, Integer pageSize) {
+		Pageable pageable = PageRequest.of(pageNo, pageSize);
+		return productRepository.findAll(pageable);
 	}
+
 
 	@Override
 	public Product getProductById(Integer id) {
@@ -99,8 +100,10 @@ public class ProductServiceImpl implements ProductService {
 							+ image.getOriginalFilename());
 					Files.copy(image.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
 
+				} catch (IOException e) {
+					throw new RuntimeException("Error saving file: " + e.getMessage());
 				} catch (Exception e) {
-					e.printStackTrace();
+					throw new RuntimeException("Error: " + e.getMessage());
 				}
 			}
 			return product;
@@ -123,7 +126,7 @@ public class ProductServiceImpl implements ProductService {
 	public Page<Product> getAllActiveProductPagination(Integer pageNo, Integer pageSize, String category) {
 
 		Pageable pageable = PageRequest.of(pageNo, pageSize);
-		Page<Product> pageProduct = null;
+		Page<Product> pageProduct;
 
 		if (ObjectUtils.isEmpty(category)) {
 			pageProduct = productRepository.findByIsActiveTrue(pageable);
@@ -136,7 +139,7 @@ public class ProductServiceImpl implements ProductService {
 	@Override
 	public Page<Product> searchActiveProductPagination(Integer pageNo, Integer pageSize, String category, String ch) {
 
-		Page<Product> pageProduct = null;
+		Page<Product> pageProduct;
 		Pageable pageable = PageRequest.of(pageNo, pageSize);
 
 		pageProduct = productRepository.findByIsActiveTrueAndTitleContainingIgnoreCaseOrCategoryContainingIgnoreCase(ch,
@@ -148,7 +151,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<Product> getAllActiveProducts(String category) {
-		List <Product> products = null;
+		List<Product> products;
 		if(ObjectUtils.isEmpty(category)) {
 			products = productRepository.findByIsActiveTrue();
 		} else {

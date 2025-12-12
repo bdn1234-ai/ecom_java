@@ -4,21 +4,20 @@ import java.security.Principal;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.ui.Model;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.example.ecom.model.Cart;
-import com.example.ecom.model.Category;
 import com.example.ecom.model.OrderRequest;
 import com.example.ecom.model.ProductOrder;
 import com.example.ecom.model.User;
 import com.example.ecom.service.CartService;
-import com.example.ecom.service.CategoryService;
 import com.example.ecom.service.OrderService;
 import com.example.ecom.service.UserService;
 import com.example.ecom.utils.OrderStatus;
@@ -35,8 +34,8 @@ public class UserController {
 	@Autowired
 	private CartService cartService;
 
-	@Autowired
-	private OrderService orderService;
+    @Autowired
+    private CartService cartService;
 
 	@GetMapping("/")
 	public String home() {
@@ -55,20 +54,22 @@ public class UserController {
 		return "redirect:/product/" + pid;
 	}
 
-	@GetMapping("/cart")
-	public String loadCartPage(Principal p, Model m) {
+    @GetMapping("/cart")
+    public String loadCartPage(Principal p, Model m) {
+        // If the user is not authenticated, send them to login page to avoid NPE
+        if (p == null) {
+            return "redirect:/login";
+        }
 
-		User user = getLoggedInUserDetails(p);
-		List<Cart> carts = cartService.getCartsByUser(user.getId());
-		m.addAttribute("carts", carts);
-		if (carts.size() > 0) {
-			Double totalOrderPrice = carts.get(carts.size() - 1).getTotalOrderPrice();
-			m.addAttribute("totalOrderPrice", totalOrderPrice);
-		}
-		return "/user/cart";
-	}
-
-	@GetMapping("/cartQuantityUpdate")
+        User user = getLoggedInUserDetails(p);
+        List<Cart> carts = cartService.getCartsByUser(user.getId());
+        m.addAttribute("carts", carts);
+        if (!carts.isEmpty()) {
+            Double totalOrderPrice = carts.get(carts.size() - 1).getTotalOrderPrice();
+            m.addAttribute("totalOrderPrice", totalOrderPrice);
+        }
+        return "/user/cart";
+    }	@GetMapping("/cartQuantityUpdate")
 	public String updateCartQuantity(@RequestParam String sy, @RequestParam Integer cid) {
 		cartService.updateQuantity(sy, cid);
 		return "redirect:/cart";
@@ -80,21 +81,19 @@ public class UserController {
 		return userDtls;
 	}
 
-	@GetMapping("/orders")
-	public String orderPage(Principal p, Model m) {
-		User user = getLoggedInUserDetails(p);
-		List<Cart> carts = cartService.getCartsByUser(user.getId());
-		m.addAttribute("carts", carts);
-		if (carts.size() > 0) {
-			Double orderPrice = carts.get(carts.size() - 1).getTotalOrderPrice();
-			Double totalOrderPrice = carts.get(carts.size() - 1).getTotalOrderPrice() + 250 + 100;
-			m.addAttribute("orderPrice", orderPrice);
-			m.addAttribute("totalOrderPrice", totalOrderPrice);
-		}
-		return "/user/order";
-	}
-
-	@PostMapping("/save-order")
+    @GetMapping("/orders")
+    public String orderPage(Principal p, Model m) {
+        User user = getLoggedInUserDetails(p);
+        List<Cart> carts = cartService.getCartsByUser(user.getId());
+        m.addAttribute("carts", carts);
+        if (!carts.isEmpty()) {
+            Double orderPrice = carts.get(carts.size() - 1).getTotalOrderPrice();
+            Double totalOrderPrice = carts.get(carts.size() - 1).getTotalOrderPrice() + 250 + 100;
+            m.addAttribute("orderPrice", orderPrice);
+            m.addAttribute("totalOrderPrice", totalOrderPrice);
+        }
+        return "/user/order";
+    }	@PostMapping("/save-order")
 	public String saveOrder(@ModelAttribute OrderRequest request, Principal p) {
 		// System.out.println(request);
 		User user = getLoggedInUserDetails(p);
@@ -113,7 +112,15 @@ public class UserController {
 		User loginUser = getLoggedInUserDetails(p);
 		List<ProductOrder> orders = orderService.getOrdersByUser(loginUser.getId());
 		m.addAttribute("orders", orders);
-		return "/user/my_orders";
+		return "/user/my_oders";
+	}
+	
+	@GetMapping("/user/user-orders")
+	public String userUserOrders(Model m, Principal p) {
+		User loginUser = getLoggedInUserDetails(p);
+		List<ProductOrder> orders = orderService.getOrdersByUser(loginUser.getId());
+		m.addAttribute("orders", orders);
+		return "/user/my_oders";
 	}
 
 	@GetMapping("/update-status")
@@ -137,4 +144,42 @@ public class UserController {
 		}
 		return "redirect:/user-orders";
 	}
+	@GetMapping("/profile")
+	public String profile() {
+		return "/user/profile";
+	}
+	@PostMapping("/update-profile")
+	public String updateProfile(@ModelAttribute User user, @RequestParam(required = false) MultipartFile img, HttpSession session) {
+		User updateUserProfile = userService.updateUserProfile(user, img);
+		if (ObjectUtils.isEmpty(updateUserProfile)) {
+			session.setAttribute("errorMsg", "Profile not updated");
+		} else {
+			session.setAttribute("succMsg", "Profile Updated");
+		}
+		return "redirect:/profile";
+	}
+
+	@PostMapping("/change-password")
+	public String changePassword(@RequestParam String newPassword, @RequestParam String currentPassword, Principal p,
+			HttpSession session) {
+		User loggedInUserDetails = getLoggedInUserDetails(p);
+
+		boolean matches = passwordEncoder.matches(currentPassword, loggedInUserDetails.getPassword());
+
+		if (matches) {
+			String encodePassword = passwordEncoder.encode(newPassword);
+			loggedInUserDetails.setPassword(encodePassword);
+			User updateUser = userService.updateUser(loggedInUserDetails);
+			if (ObjectUtils.isEmpty(updateUser)) {
+				session.setAttribute("errorMsg", "Password not updated !! Error in server");
+			} else {
+				session.setAttribute("succMsg", "Password Updated sucessfully");
+			}
+		} else {
+			session.setAttribute("errorMsg", "Current Password incorrect");
+		}
+
+		return "redirect:/profile";
+	}
+
 }

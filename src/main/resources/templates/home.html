@@ -17,11 +17,13 @@
     <!-- Bootstrap Icons -->
     <link rel="stylesheet"
           href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 
-<body>
+<body class="d-flex flex-column min-vh-100">
 
 <!-- ======== NAVBAR ======== -->
 <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
@@ -49,40 +51,54 @@
             <!-- Menu phải -->
             <ul class="navbar-nav ms-auto">
 
-                <!-- Nếu user đã đăng nhập -->
-                <li class="nav-item" sec:authorize="isAuthenticated()">
-                    <a class="nav-link" th:href="@{/profile}">
-                        👋 Chào, <span sec:authentication="name"></span>
-                    </a>
-                </li>
-
-                <!-- Nếu chưa đăng nhập -->
-                <li class="nav-item" sec:authorize="isAnonymous()">
+                <!-- Hiển thị khi CHƯA đăng nhập -->
+                <li class="nav-item" th:unless="${user}">
                     <a class="nav-link" th:href="@{/login}">Đăng nhập</a>
                 </li>
-                <li class="nav-item" sec:authorize="isAnonymous()">
+                <li class="nav-item" th:unless="${user}">
                     <a class="nav-link" th:href="@{/register}">Đăng ký</a>
                 </li>
 
-                <!-- Nếu user là ADMIN -->
-                <li class="nav-item" sec:authorize="hasRole('ADMIN')">
-                    <a class="nav-link text-danger fw-bold" th:href="@{/admin}">
-                        <i class="bi bi-speedometer2"></i> Quản trị
-                    </a>
-                </li>
-
-                <!-- Giỏ hàng -->
-                <li class="nav-item">
+                <!-- Hiển thị khi ĐÃ đăng nhập -->
+                <li class="nav-item" th:if="${user}">
                     <a class="nav-link" th:href="@{/cart}">
                         <i class="bi bi-cart-fill"></i> Giỏ hàng
-                        <span class="badge bg-danger" th:if="${cartItemCount > 0}" th:text="${cartItemCount}">0</span>
+                        <span class="badge bg-danger" th:if="${countCart > 0}" th:text="${countCart}">0</span>
                     </a>
                 </li>
 
-                <!-- Nút Đăng xuất -->
-                <li class="nav-item" sec:authorize="isAuthenticated()">
-                    <form th:action="@{/logout}" method="post" id="logoutForm"></form>
-                    <a href="#" class="nav-link" onclick="document.getElementById('logoutForm').submit()">Đăng xuất</a>
+                <li class="nav-item dropdown" th:if="${user}">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-person-circle"></i> <span th:text="${user.name}">User</span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li th:if="${user.role=='ROLE_USER'}">
+                            <a class="dropdown-item" th:href="@{/profile}">
+                                <i class="bi bi-person"></i> Hồ sơ cá nhân
+                            </a>
+                        </li>
+                        <li th:if="${user.role=='ROLE_ADMIN'}">
+                            <a class="dropdown-item" th:href="@{/profile}">
+                                <i class="bi bi-person"></i> Hồ sơ cá nhân
+                            </a>
+                        </li>
+                        <li th:if="${user.role=='ROLE_ADMIN'}">
+                            <a class="dropdown-item" th:href="@{/admin}">
+                                <i class="bi bi-speedometer2"></i> Quản trị
+                            </a>
+                        </li>
+                        <li th:if="${user.role=='ROLE_USER'}">
+                            <a class="dropdown-item" th:href="@{/user/user-orders}">
+                                <i class="bi bi-bag"></i> Đơn hàng của tôi
+                            </a>
+                        </li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li>
+                            <a class="dropdown-item" th:href="@{/logout}">
+                                <i class="bi bi-box-arrow-right"></i> Đăng xuất
+                            </a>
+                        </li>
+                    </ul>
                 </li>
             </ul>
         </div>
@@ -107,11 +123,11 @@
         <div class="row g-4">
             <div class="col-md-4" th:each="category : ${featuredCategories}">
                 <div class="card text-center">
-                    <img th:src="${category.imageUrl}" class="card-img-top"
+                    <img th:src="@{'img/category_img/'+${category.imageName}}" class="card-img-top"
                          th:alt="${category.name}" style="height: 200px; object-fit: cover;">
                     <div class="card-body">
                         <h5 class="card-title" th:text="${category.name}">Tên Danh mục</h5>
-                        <a th:href="@{/categories/{id}(id=${category.id})}" class="btn btn-outline-primary">Xem</a>
+                        <a th:href="@{/products?category=+${category.name}}" class="btn btn-outline-primary">Xem</a>
                     </div>
                 </div>
             </div>
@@ -124,18 +140,18 @@
         <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
             <div class="col" th:each="product : ${featuredProducts}">
                 <div class="card h-100 shadow-sm">
-                    <a th:href="@{/products/{id}(id=${product.id})}">
-                        <img th:src="${product.imageUrl}" class="card-img-top"
-                             th:alt="${product.name}" style="height: 250px; object-fit: cover;">
+                    <a th:href="@{/product/{id}(id=${product.id})}">
+                        <img th:src="@{'img/product_img/'+${product.image}}" class="card-img-top"
+                             th:alt="${product.title}" style="height: 250px; object-fit: cover;">
                     </a>
                     <div class="card-body">
                         <h5 class="card-title">
-                            <a th:href="@{/products/{id}(id=${product.id})}"
+                            <a th:href="@{/product/{id}(id=${product.id})}"
                                class="text-decoration-none text-dark"
-                               th:text="${product.name}">Tên sản phẩm</a>
+                               th:text="${product.title}">Tên sản phẩm</a>
                         </h5>
                         <p class="card-text fw-bold text-danger"
-                           th:text="${#numbers.formatCurrency(product.price)}">
+                           th:text="'₫ ' + ${product.price}">
                             9.999.999 ₫
                         </p>
                     </div>
@@ -151,7 +167,7 @@
 </main>
 
 <!-- ======== FOOTER ======== -->
-<footer class="bg-dark text-white text-center p-4 mt-5">
+<footer class="bg-dark text-white text-center p-4 mt-auto">
     <div class="container">
         <p class="mb-0">&copy; 2025 Cửa hàng của tôi. Mọi quyền được bảo lưu.</p>
         <p>

@@ -6,17 +6,20 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.Map;
+import java.security.Principal;
 import java.util.List;
 
 import com.example.ecom.model.Category;
 import com.example.ecom.model.Product;
-import com.example.ecom.model.ProductOrder;
+import com.example.ecom.model.User;
+import com.example.ecom.service.CategoryService;
+import com.example.ecom.service.ProductService;
+import com.example.ecom.service.UserService;
 
 import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.domain.Page;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.ObjectUtils;
@@ -43,7 +46,13 @@ public class AdminController {
     private CategoryService categoryService;
 
     @Autowired
-	private ProductService productService;
+    private ProductService productService;
+    
+    @Autowired
+    private UserService userService;
+    
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Autowired 
     private OrderService orderService;
@@ -125,9 +134,8 @@ public class AdminController {
             oldCategory.setIsActive(category.getIsActive());
 
             // 3. Xử lý logic ảnh (chỉ cập nhật tên ảnh nếu có file mới upload)
-            String imageName = oldCategory.getImageName(); // Mặc định giữ ảnh cũ
             if (!file.isEmpty()) {
-                imageName = file.getOriginalFilename();
+                String imageName = file.getOriginalFilename();
                 oldCategory.setImageName(imageName);
             }
 
@@ -151,8 +159,9 @@ public class AdminController {
                 session.setAttribute("errorMsg", "Đã có lỗi xảy ra trong quá trình cập nhật (Database)");
             }
 
+        } catch (IOException e) {
+            session.setAttribute("errorMsg", "Lỗi I/O: " + e.getMessage());
         } catch (Exception e) {
-            e.printStackTrace();
             session.setAttribute("errorMsg", "Lỗi hệ thống: " + e.getMessage());
         }
 
@@ -205,10 +214,8 @@ public class AdminController {
                     session.setAttribute("succMsg", "Lưu sản phẩm thành công");
 
                 } catch (IOException e) {
-                    e.printStackTrace();
                     session.setAttribute("errorMsg", "Lỗi I/O khi lưu tệp ảnh: " + e.getMessage());
                 } catch (Exception e) {
-                    e.printStackTrace();
                     session.setAttribute("errorMsg", "Lỗi không mong muốn: " + e.getMessage());
                 }
             }
@@ -222,7 +229,7 @@ public class AdminController {
                                   @RequestParam(name = "pageSize", defaultValue = "12") Integer pageSize,
                                   @RequestParam(defaultValue = "") String ch) {
 
-        Page<Product> page = null;
+        Page<Product> page;
         if (ch == null || ch.isBlank()) {
             page = productService.getAllActiveProductPagination(pageNo, pageSize, "");
         } else {
@@ -275,6 +282,48 @@ public class AdminController {
 
 		return "redirect:/admin/products";
 	}
+    @PostMapping("/update-profile")
+    public String updateProfile(@ModelAttribute User user, @RequestParam(required = false) MultipartFile img, HttpSession session) {
+        User updateUserProfile = userService.updateUserProfile(user, img);
+        if (ObjectUtils.isEmpty(updateUserProfile)) {
+            session.setAttribute("errorMsg", "Profile not updated");
+        } else {
+            session.setAttribute("succMsg", "Profile Updated");
+        }
+        return "redirect:/admin/profile";
+    }
+    @GetMapping("/profile")
+    public String profile() {
+        return "/admin/profile";
+    }
+    @PostMapping("/change-password")
+    public String changePassword(@RequestParam String newPassword, @RequestParam String currentPassword, Principal p,
+            HttpSession session) {
+        User loggedInUserDetails = getLoggedInUserDetails(p);
+
+        boolean matches = passwordEncoder.matches(currentPassword, loggedInUserDetails.getPassword());
+
+        if (matches) {
+            String encodePassword = passwordEncoder.encode(newPassword);
+            loggedInUserDetails.setPassword(encodePassword);
+            User updateUser = userService.updateUser(loggedInUserDetails);
+            if (ObjectUtils.isEmpty(updateUser)) {
+                session.setAttribute("errorMsg", "Password not updated !! Error in server");
+            } else {
+                session.setAttribute("succMsg", "Password Updated sucessfully");
+            }
+        } else {
+            session.setAttribute("errorMsg", "Current Password incorrect");
+        }
+
+        return "redirect:/admin/profile";
+    }
+    
+    private User getLoggedInUserDetails(Principal p) {
+        String email = p.getName();
+        User userDetails = userService.getUserByEmail(email);
+        return userDetails;
+    }
 
     @GetMapping("/search-order")
 	public String searchProduct(@RequestParam String orderId, Model m, HttpSession session,
