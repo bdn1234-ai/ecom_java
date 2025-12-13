@@ -37,8 +37,7 @@ public class HomeController {
         m.addAttribute("featuredCategories", featuredCategories);
 
         return "home";
-
-
+    }
     @GetMapping("/search")
     public String searchProduct(@RequestParam String ch, Model m) {
         List<Product> searchProducts = productService.searchProduct(ch);

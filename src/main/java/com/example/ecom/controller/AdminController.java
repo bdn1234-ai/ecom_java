@@ -31,6 +31,7 @@ import com.example.ecom.service.ProductService;
 import com.example.ecom.service.OrderService;
 
 import jakarta.servlet.http.HttpSession;
+import com.example.ecom.model.ProductOrder;
 
 import org.springframework.ui.Model;
 import java.util.List;

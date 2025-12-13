@@ -3,6 +3,7 @@ package com.example.ecom.controller;
 import java.security.Principal;
 import java.util.List;
 
+import com.example.ecom.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.ui.Model;
@@ -23,6 +24,7 @@ import com.example.ecom.service.UserService;
 import com.example.ecom.utils.OrderStatus;
 
 import jakarta.servlet.http.HttpSession;
+import org.springframework.stereotype.Controller;
 
 @Controller
 public class UserController {
@@ -34,8 +36,12 @@ public class UserController {
 	@Autowired
 	private CartService cartService;
 
-    @Autowired
-    private CartService cartService;
+	@Autowired
+	private OrderService orderService;
+	@Autowired
+	private PasswordEncoder passwordEncoder;
+
+
 
 	@GetMapping("/")
 	public String home() {
