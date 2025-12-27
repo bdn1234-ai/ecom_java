@@ -67,16 +67,12 @@
                 Policy : 7 Days Replacement & Return
               </p>
               <p class="fs-5 fw-bold">
-                Price :&nbsp; &nbsp; &nbsp; &nbsp;<th:block
-                  th:utext="${@commonServiceImpl.rupeeSign()}"
-                ></th:block>
+                Price :
                 [[${product.discountPrice}]]
-                <span class="fs-6 text-decoration-line-through text-secondary"
-                  >[[${product.price}]]</span
+                <span class="fs-6 text-secondary"
+                  >[[${product.price}]] VND</span
                 >
-                <span class="fs-6 text-success"
-                  >[[${product.discount}]]% off</span
-                >
+
               </p>
 
               <div class="row">

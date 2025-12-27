@@ -73,7 +73,8 @@
 										<td>[[${orderDtls.product.title}]]</td>
 										<td>Quantity : [[${orderDtls.quantity}]] <br>Price :
 											[[${orderDtls.price}]] <br>Total Price
-											:[[${orderDtls.quantity * orderDtls.price}]]
+											:[[${(orderDtls.quantity != null ? orderDtls.quantity : 0) * (orderDtls.price != null ? orderDtls.price : 0)}]]
+
 										</td>
 										<td>[[${orderDtls.status}]]</td>
 										<td>
@@ -131,8 +132,7 @@
 									<td>[[${o.orderDate}]]</td>
 									<td>[[${o.product.title}]]</td>
 									<td>Quantity : [[${o.quantity}]] <br>Price :
-										[[${o.price}]] <br>Total Price :[[${o.quantity *
-										o.price}]]
+										[[${o.price}]] <br>Total Price :[[${(o.quantity != null ? o.quantity : 0) * (o.price != null ? o.price : 0)}]]
 									</td>
 									<td>[[${o.status}]]</td>
 									<td>
