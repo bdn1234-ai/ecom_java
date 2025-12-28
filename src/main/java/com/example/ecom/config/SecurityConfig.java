@@ -38,6 +38,7 @@ public class SecurityConfig {
                         // Các đường dẫn public
                         .requestMatchers("/",
                                 "/products", "/search", "/product/**",
+                                "/img/**", "/error",
                                 "/login", "/register", "/css/**", "/js/**", "/images/**").permitAll()
 
             // Chỉ ADMIN mới được truy cập /admin/**
