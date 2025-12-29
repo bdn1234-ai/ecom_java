@@ -38,7 +38,7 @@ public class SecurityConfig {
                         // Các đường dẫn public
                         .requestMatchers("/",
                                 "/products",
-                                "/login", "/register", "/css/**", "/js/**", "/images/**").permitAll()
+                                "/login", "/register","/img/**", "/css/**", "/js/**", "/images/**").permitAll()
 
             // Chỉ ADMIN mới được truy cập /admin/**
             .requestMatchers("/admin/**").hasRole("ADMIN")

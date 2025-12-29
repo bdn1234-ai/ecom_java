@@ -1,170 +1,105 @@
 <!DOCTYPE html>
-<html lang="vi"
-      xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trang chủ - Cửa hàng của tôi</title>
+    <title>Chúc Mừng Năm Mới 2026 - MyStore SOICT</title>
 
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-          rel="stylesheet"
-          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
-          crossorigin="anonymous">
-
-    <!-- Bootstrap Icons -->
-    <link rel="stylesheet"
-          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
+<body class="d-flex flex-column min-vh-100 tet-theme">
+    <div class="blossom-container"></div>
 
-<body>
-
-<!-- ======== NAVBAR ======== -->
-<nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
-    <div class="container">
-        <a class="navbar-brand" th:href="@{/}">🛍️ MyStore</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <!-- Menu trái -->
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" th:href="@{/}">Trang chủ</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" th:href="@{/products}">Sản phẩm</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" th:href="@{/categories}">Danh mục</a>
-                </li>
-            </ul>
-
-            <!-- Menu phải -->
-            <ul class="navbar-nav ms-auto">
-
-                <!-- Nếu user đã đăng nhập -->
-                <li class="nav-item" sec:authorize="isAuthenticated()">
-                    <a class="nav-link" th:href="@{/profile}">
-                        👋 Chào, <span sec:authentication="name"></span>
-                    </a>
-                </li>
-
-                <!-- Nếu chưa đăng nhập -->
-                <li class="nav-item" sec:authorize="isAnonymous()">
-                    <a class="nav-link" th:href="@{/login}">Đăng nhập</a>
-                </li>
-                <li class="nav-item" sec:authorize="isAnonymous()">
-                    <a class="nav-link" th:href="@{/register}">Đăng ký</a>
-                </li>
-
-                <!-- Nếu user là ADMIN -->
-                <li class="nav-item" sec:authorize="hasRole('ADMIN')">
-                    <a class="nav-link text-danger fw-bold" th:href="@{/admin}">
-                        <i class="bi bi-speedometer2"></i> Quản trị
-                    </a>
-                </li>
-
-                <!-- Giỏ hàng -->
-                <li class="nav-item">
-                    <a class="nav-link" th:href="@{/cart}">
-                        <i class="bi bi-cart-fill"></i> Giỏ hàng
-                        <span class="badge bg-danger" th:if="${cartItemCount > 0}" th:text="${cartItemCount}">0</span>
-                    </a>
-                </li>
-
-                <!-- Nút Đăng xuất -->
-                <li class="nav-item" sec:authorize="isAuthenticated()">
-                    <form th:action="@{/logout}" method="post" id="logoutForm"></form>
-                    <a href="#" class="nav-link" onclick="document.getElementById('logoutForm').submit()">Đăng xuất</a>
-                </li>
-            </ul>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-tet-red shadow-sm sticky-top">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" th:href="@{/}">
+                <img src="https://soict.hust.edu.vn/wp-content/uploads/logo-soict-hust.png" alt="SOICT Logo" height="40" class="me-2 bg-white p-1 rounded">
+                <span class="fw-bold text-gold">🛍️ MyStore 2026</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item"><a class="nav-link active text-gold" th:href="@{/}">Trang chủ</a></li>
+                    <li class="nav-item"><a class="nav-link text-gold" th:href="@{/products}">Sản phẩm</a></li>
+                </ul>
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item" sec:authorize="isAuthenticated()">
+                        <a class="nav-link text-gold" th:href="@{/user/profile}">👋 Chào, <span sec:authentication="name"></span></a>
+                    </li>
+                    <li class="nav-item" sec:authorize="isAnonymous()">
+                        <a class="nav-link text-gold" th:href="@{/login}">Đăng nhập</a>
+                    </li>
+                    <li class="nav-item" sec:authorize="isAnonymous()">
+                        <a class="nav-link text-gold" th:href="@{/register}">Đăng ký</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-gold" th:href="@{/cart}">
+                            <i class="bi bi-cart-fill"></i> Giỏ hàng
+                            <span class="badge bg-warning text-dark" th:if="${cartItemCount > 0}" th:text="${cartItemCount}">0</span>
+                        </a>
+                    </li>
+                    <li class="nav-item" sec:authorize="isAuthenticated()">
+                        <form th:action="@{/logout}" method="post" id="logoutForm" class="d-none"></form>
+                        <a href="javascript:void(0)" class="nav-link text-gold" onclick="document.getElementById('logoutForm').submit()">Đăng xuất</a>
+                    </li>
+                </ul>
+            </div>
         </div>
+    </nav>
+
+    <div class="bg-warning py-1">
+        <marquee class="fw-bold text-danger">🧧 Chúc Mừng Năm Mới Bính Ngọ 2026 - An Khang Thịnh Vượng - SOICT Store đồng hành cùng bạn! 🧧</marquee>
     </div>
-</nav>
 
-<!-- ======== MAIN CONTENT ======== -->
-<main class="container my-4">
+    <main class="container my-4">
+        <section class="p-5 mb-4 bg-tet-red rounded-3 text-center text-white border border-warning border-3 card-sh">
+            <div class="container-fluid py-5">
+                <h1 class="display-5 fw-bold text-gold">🧧 XUÂN BÍNH NGỌ 2026 🧧</h1>
+                <p class="fs-4">Khai xuân rực rỡ - Ưu đãi giảm giá tới 50% cho sinh viên SOICT.</p>
+                <a th:href="@{/products}" class="btn btn-warning btn-lg fw-bold text-danger">MUA SẮM NGAY</a>
+            </div>
+        </section>
 
-    <!-- Banner -->
-    <section class="p-5 mb-4 bg-light rounded-3 text-center">
-        <div class="container-fluid py-5">
-            <h1 class="display-5 fw-bold">Khuyến mãi mùa hè!</h1>
-            <p class="fs-4">Giảm giá lên tới 50% cho tất cả các mặt hàng. Đừng bỏ lỡ.</p>
-            <a th:href="@{/products/sale}" class="btn btn-primary btn-lg">Mua ngay</a>
-        </div>
-    </section>
-
-    <!-- Danh mục nổi bật -->
-    <section class="mb-5">
-        <h2 class="text-center mb-4">Danh mục nổi bật</h2>
-        <div class="row g-4">
+        <h2 class="text-center mb-4 text-danger fw-bold">🏮 Danh Mục Nổi Bật</h2>
+        <div class="row g-4 mb-5">
             <div class="col-md-4" th:each="category : ${featuredCategories}">
-                <div class="card text-center">
-                    <img th:src="${category.imageUrl}" class="card-img-top"
-                         th:alt="${category.name}" style="height: 200px; object-fit: cover;">
+                <div class="card text-center card-sh">
+                    <img th:src="${category.imageUrl}" class="card-img-top" style="height: 200px; object-fit: cover;">
                     <div class="card-body">
-                        <h5 class="card-title" th:text="${category.name}">Tên Danh mục</h5>
-                        <a th:href="@{/categories/{id}(id=${category.id})}" class="btn btn-outline-primary">Xem</a>
+                        <h5 class="card-title text-danger" th:text="${category.name}">Tên Danh mục</h5>
+                        <a th:href="@{/categories/{id}(id=${category.id})}" class="btn btn-outline-danger">Xem</a>
                     </div>
                 </div>
             </div>
         </div>
-    </section>
 
-    <!-- Sản phẩm bán chạy -->
-    <section>
-        <h2 class="text-center mb-4">Sản phẩm bán chạy</h2>
+        <h2 class="text-center mb-4 text-danger fw-bold">🌸 Sản Phẩm Bán Chạy</h2>
         <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
             <div class="col" th:each="product : ${featuredProducts}">
-                <div class="card h-100 shadow-sm">
-                    <a th:href="@{/products/{id}(id=${product.id})}">
-                        <img th:src="${product.imageUrl}" class="card-img-top"
-                             th:alt="${product.name}" style="height: 250px; object-fit: cover;">
-                    </a>
+                <div class="card h-100 card-sh">
+                    <img th:src="${product.imageUrl}" class="card-img-top" style="height: 250px; object-fit: cover;">
                     <div class="card-body">
-                        <h5 class="card-title">
-                            <a th:href="@{/products/{id}(id=${product.id})}"
-                               class="text-decoration-none text-dark"
-                               th:text="${product.name}">Tên sản phẩm</a>
-                        </h5>
-                        <p class="card-text fw-bold text-danger"
-                           th:text="${#numbers.formatCurrency(product.price)}">
-                            9.999.999 ₫
-                        </p>
+                        <h5 class="card-title" th:text="${product.name}">Tên sản phẩm</h5>
+                        <p class="card-text fw-bold text-danger" th:text="${#numbers.formatCurrency(product.price)}">0 ₫</p>
                     </div>
-                    <div class="card-footer bg-white border-top-0">
-                        <a th:href="@{/cart/add(productId=${product.id})}" class="btn btn-primary w-100">
-                            <i class="bi bi-cart-plus"></i> Thêm vào giỏ
-                        </a>
+                    <div class="card-footer bg-white border-0">
+                        <a th:href="@{/cart/add(productId=${product.id})}" class="btn btn-danger w-100">Thêm vào giỏ</a>
                     </div>
                 </div>
             </div>
         </div>
-    </section>
-</main>
+    </main>
 
-<!-- ======== FOOTER ======== -->
-<footer class="bg-dark text-white text-center p-4 mt-5">
-    <div class="container">
-        <p class="mb-0">&copy; 2025 Cửa hàng của tôi. Mọi quyền được bảo lưu.</p>
-        <p>
-            <a href="#" class="text-white">Về chúng tôi</a> |
-            <a href="#" class="text-white">Liên hệ</a> |
-            <a href="#" class="text-white">Chính sách bảo mật</a>
-        </p>
-    </div>
-</footer>
+    <footer class="bg-tet-red text-white text-center p-4 mt-auto border-top border-warning border-4">
+        <p class="mb-0 fw-bold">&copy; 2026 SOICT Store. Cung chúc tân xuân!</p>
+    </footer>
 
-<!-- ======== JS ======== -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-        crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script th:src="@{/js/script.js}"></script>
 </body>
 </html>

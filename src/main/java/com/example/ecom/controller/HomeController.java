@@ -26,6 +26,16 @@ public class HomeController {
 
 
 
+    @GetMapping("/")
+    public String index(Model m) {
+        
+        List<Category> allActiveCategory = categoryService.getAllActiveCategory();
+        m.addAttribute("featuredCategories", allActiveCategory);
+        List<Product> allActiveProducts = productService.getAllActiveProducts("");
+        m.addAttribute("featuredProducts", allActiveProducts);
+        return "home"; 
+    }
+    
     @GetMapping("/search")
     public String searchProduct(@RequestParam String ch, Model m) {
         List<Product> searchProducts = productService.searchProduct(ch);
