@@ -2,6 +2,7 @@ package com.example.ecom.controller;
 
 import java.util.List;
 
+import io.micrometer.common.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -36,7 +37,7 @@ public class ProductController {
 //		List<Product> products = productService.getAllActiveProducts(category);
 //		m.addAttribute("products", products);
 		Page<Product> page = null;
-		if (ch == null && ch.length() > 0) {
+		if (StringUtils.isEmpty(ch)) {
 			page = productService.getAllActiveProductPagination(pageNo, pageSize, category);
 		} else {
 			page = productService.searchActiveProductPagination(pageNo, pageSize, category, ch);

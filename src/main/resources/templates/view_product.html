@@ -68,11 +68,11 @@
               </p>
               <p class="fs-5 fw-bold">
                 Price :
-                [[${product.discountPrice}]]
-                <span class="fs-6 text-secondary"
-                  >[[${product.price}]] VND</span
-                >
 
+
+                <span class="fs-6 text-secondary">
+    [[${#numbers.formatDecimal(product.price, 0, 'COMMA', 0, 'POINT')}]] VND
+  </span>
               </p>
 
               <div class="row">
