@@ -17,17 +17,17 @@ import com.example.ecom.service.CartService;
 
 @Service
 public class CartServiceImpl implements CartService {
-    @Autowired
-    private CartRepository cartRepository;
+	@Autowired
+	private CartRepository cartRepository;
 
-    @Autowired
-    private UserRepository userRepository;
+	@Autowired
+	private UserRepository userRepository;
 
-    @Autowired
-    private ProductRepository productRepository;
+	@Autowired
+	private ProductRepository productRepository;
 
-    @Override
-    public Cart saveCart(Integer productId, Integer userId) {
+	@Override
+	public Cart saveCart(Integer productId, Integer userId) {
 		User user = userRepository.findById(userId).orElse(null);
 		Product product = productRepository.findById(productId).orElse(null);
 
@@ -59,11 +59,12 @@ public class CartServiceImpl implements CartService {
 				sellingPrice = product.getPrice();
 			}
 
-			cart.setTotalPrice(cart.getQuantity() * sellingPrice);		}
-			Cart saveCart = cartRepository.save(cart);
+			cart.setTotalPrice(cart.getQuantity() * sellingPrice);
+		}
+		Cart saveCart = cartRepository.save(cart);
 
 		return saveCart;
-    }
+	}
 
 	@Override
 	public List<Cart> getCartsByUser(Integer userId) {
@@ -104,16 +105,16 @@ public class CartServiceImpl implements CartService {
 		return updateCarts;
 	}
 
-    @Override
-    public Integer getCountCart(Integer userId) {
-        Integer countByUserId = cartRepository.countByUserId(userId);
+	@Override
+	public Integer getCountCart(Integer userId) {
+		Integer countByUserId = cartRepository.countByUserId(userId);
 		return countByUserId;
 
-    }
+	}
 
-    @Override
-    public void updateQuantity(String sy, Integer cid) {
-       
+	@Override
+	public void updateQuantity(String sy, Integer cid) {
+
 		Cart cart = cartRepository.findById(cid).get();
 		int updateQuantity;
 
@@ -132,6 +133,6 @@ public class CartServiceImpl implements CartService {
 			cart.setQuantity(updateQuantity);
 			cartRepository.save(cart);
 		}
-    }
+	}
 
 }
