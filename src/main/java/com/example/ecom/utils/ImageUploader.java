@@ -49,10 +49,9 @@ public class ImageUploader {
         }
 
         // 3. Khởi tạo tên file an toàn (sử dụng UUID)
-        String fileName = multipartFile.getOriginalFilename();
-        String originalName = fileName != null ? StringUtils.cleanPath(fileName) : "";
+        String originalName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
         String extension = "";
-        if (!originalName.isEmpty() && originalName.contains(".")) {
+        if (originalName != null && originalName.contains(".")) {
             extension = originalName.substring(originalName.lastIndexOf("."));
         }
         this.storedFileName = UUID.randomUUID().toString() + extension;

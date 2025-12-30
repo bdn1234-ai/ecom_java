@@ -38,9 +38,9 @@ public class UserController {
 	@Autowired
 	private OrderService orderService;
 
-	@GetMapping("/user")
+	@GetMapping("/")
 	public String home() {
-		return "user/home";
+		return "home";
 	}
 
 	@GetMapping("/addCart")
