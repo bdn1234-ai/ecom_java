@@ -67,16 +67,12 @@
                 Policy : 7 Days Replacement & Return
               </p>
               <p class="fs-5 fw-bold">
-                Price :&nbsp; &nbsp; &nbsp; &nbsp;<th:block
-                  th:utext="${@commonServiceImpl.rupeeSign()}"
-                ></th:block>
+                Price :
                 [[${product.discountPrice}]]
-                <span class="fs-6 text-decoration-line-through text-secondary"
-                  >[[${product.price}]]</span
+                <span class="fs-6 text-secondary"
+                  >[[${product.price}]] VND</span
                 >
-                <span class="fs-6 text-success"
-                  >[[${product.discount}]]% off</span
-                >
+
               </p>
 
               <div class="row">
@@ -94,15 +90,16 @@
                 </div>
               </div>
 
-              <th:block th:if="${product.stock>0}">
-                <th:block th:if="${user == null}">
-                  <a href="/user/login" class="btn btn-danger col-md-12"
-                    >Add To Cart</a
-                  >
-                </th:block>
+              <th:block th:if="${product.stock > 0}">
 
-                <a th:href="@{'/addCart'(pid=${product.id}, uid=${user.id})}"
+                <a th:if="${user == null}"
+                   href="/login"
                    class="btn btn-danger col-md-12">Add To Cart</a>
+
+                <a th:if="${user != null}"
+                   th:href="@{'/addCart'(pid=${product.id}, uid=${user.id})}"
+                   class="btn btn-danger col-md-12">Add To Cart</a>
+
               </th:block>
 
               <th:block th:unless="${product.stock>0}">

@@ -37,8 +37,9 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         // Các đường dẫn public
                         .requestMatchers("/",
-                                "/products",
-                                "/login", "/register","/img/**", "/css/**", "/js/**", "/images/**").permitAll()
+                                "/products", "/search", "/product/**",
+                                "/img/**", "/error",
+                                "/login", "/register", "/css/**", "/js/**", "/images/**").permitAll()
 
             // Chỉ ADMIN mới được truy cập /admin/**
             .requestMatchers("/admin/**").hasRole("ADMIN")
